@@ -131,8 +131,7 @@
 
                 <section id="umlsequenza">
                     <h2>Diagramma di Sequenza</h2>
-                    <p class="lead">Diagramma di sequenza di ogni pagina </p>
-                    <img src="./img/Sequenza.png"/>
+                    <img src="./UML/Sequenza.png"/>
 
                 </section>
 
@@ -153,8 +152,7 @@
                         <br>
                     </p>
                     <h2>Funzionalità</h2>
-                    <p class="lead">
-                    <ul>
+                    <ul class="lead">
                         <li>Creazione di un account</li>
                         <li>Accesso all'applicazione</li>
                         <li>Visualizzazione degli appunti</li>
@@ -163,12 +161,15 @@
                         <li>Eliminazione di un appunto</li>
                         <li>Pubblicazione di un appunto</li>
                     </ul>
-                    Un utente può creare un account e registrarsi. Dopo aver effettuato l'accesso, l'utente può seguire
-                    gli utenti, visualizzare gli appunti e creare nuovi appunti. L'utente può anche eliminare gli
-                    appunti e pubblicarli.
-                    <br>
-                    Si possono effettuare ricerche per rating, argomento e autore. Si può cercare direttamente il nome
-                    dell'autore.
+                    <p class="lead">
+                        Un utente può creare un account e registrarsi. Dopo aver effettuato l'accesso, l'utente può
+                        seguire
+                        gli utenti, visualizzare gli appunti e creare nuovi appunti. L'utente può anche eliminare gli
+                        appunti e pubblicarli.
+                        <br>
+                        Si possono effettuare ricerche per rating, argomento e autore. Si può cercare direttamente il
+                        nome
+                        dell'autore.
                     </p>
                     <h2>Infrastruttura</h2>
                     <p class="lead">
@@ -190,7 +191,66 @@
 
                     </p>
                 </section>
+                <section id="analisiFunzionale">
+                    <h2>Analisi funzionale</h2>
 
+                    <h4>Introduzione</h4>
+                    <p class="lead">
+                        Il progetto consiste nella creazione di una piattaforma web per la condivisione e la gestione di
+                        appunti tra gli utenti. La piattaforma consentirà agli utenti registrati di creare, modificare e
+                        condividere appunti, nonché interagire con gli appunti di altri utenti attraverso valutazioni
+                        anonime. Sarà inoltre possibile seguire altri utenti per visualizzare i loro appunti nel proprio
+                        profilo.
+                    </p>
+                    <br>
+                    <h4>Funzionalità Principali</h4>
+                    <p class="lead">
+                        1. Registrazione/Login Utente
+                        Gli utenti potranno registrarsi e effettuare il login per accedere alla piattaforma.<br>
+                        2. Gestione degli Appunti
+                        Creazione di Appunti: Gli utenti registrati potranno creare nuovi appunti, inizialmente privati.
+                        Modifica degli Appunti: Gli utenti potranno modificare i propri appunti esistenti.
+                        Cambio di Visibilità: Gli utenti potranno modificare la visibilità dei propri appunti da privati
+                        a
+                        pubblici.<br>
+                        Cancellazione degli Appunti: Gli utenti potranno cancellare i propri appunti di cui sono
+                        proprietari.<br>
+                        Valutazione Anonima: Gli utenti potranno valutare gli appunti di altri utenti in modo
+                        anonimo.<br>
+                        3. Gestione dei Tag
+                        Creazione di Tag: Gli utenti potranno scegliere i tag per i propri appunti e crearne di
+                        nuovi.<br>
+                        4. Profilo
+                        Visualizzazione: gli utenti potranno visualizzare i profili delle altre persone.
+                        Seguire Profili: Gli utenti potranno seguire altri profili e visualizzare gli ultimi appunti
+                        pubblicati delle suddette. Verranno mostrati gli appunti pubblicati nell'ultima settimana.<br>
+                        5. Ricerca
+                        Ricerca per Tag: Gli utenti potranno cercare appunti utilizzando i tag.
+                        Ricerca di Profili: Gli utenti potranno cercare profili utilizzando il nome utente.
+                    </p>
+                    <br>
+                    <h4>Nice to Have</h4>
+                    <p class="lead">
+                        Appunti Collaborativi: Possibilità di creare appunti collaborativi tra utenti.<br>
+                        Autenticazione con OAuth: Implementazione del login utilizzando OAuth.<br>
+                        Inserimento di Grafici: Possibilità di inserire grafici utilizzando Chart.js.<br>
+                        Importazione da File Word: Gli utenti potranno creare appunti importando file Word.<br>
+                        Esportazione in Word o PDF: Gli utenti potranno esportare gli appunti in formato Word o PDF.<br>
+                    </p>
+                    <br>
+                    <h4>Tecnologie e Strumenti</h4>
+                    <p class="lead">
+                        Editor: L'editor per la creazione e la modifica degli appunti potrebbe essere Editor.js o Quill,
+                        con
+                        preferenza per il primo.<br>
+                        Socket.io: Nel caso in cui si implementino gli appunti collaborativi, si potrebbe utilizzare
+                        Socket.io per la gestione in tempo reale delle modifiche.<br>
+                        API/Librerie per Traduzioni: Sarà necessario cercare API o librerie per tradurre i file XML
+                        (utilizzati nei file Word) in JSON, compatibile con l'editor scelto, e viceversa per
+                        l'esportazione
+                        in Word.
+                    </p>
+                </section>
                 <hr class="divider">
 
                 <section id="wireframes">
