@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-
 const app = express();
 
 // Utilizza il middleware express.json() per analizzare le richieste JSON
