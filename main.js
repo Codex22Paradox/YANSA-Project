@@ -19,10 +19,16 @@ app.listen(3000, () => {
 
 app.get('/notesAccount/:username', async (req, res) => {
     const username = req.params.username;
+    const username2 = req.params.username;
     try {
-        const userId = await databaseFunction.getUserId(username);
-        const appunti = await databaseFunction.getAppuntiByUser(userId);
-        res.json(appunti);
+        if (username !== username2) {
+            const appunti = await databaseFunction.getPublicNotesByUser(username);
+            res.json(appunti);
+        } else {
+            const userId = await databaseFunction.getUserId(username);
+            const appunti = await databaseFunction.getAllNotesByUser(userId);
+            res.json(appunti);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).send('Errore del server');
