@@ -47,3 +47,14 @@ app.post('/rateNote', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
+
+app.get('/searchNotes/:searchString', async (req, res) => {
+    const searchString = req.params.searchString;
+    try {
+        const results = await databaseFunction.searchNotes(searchString);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Errore del server');
+    }
+});
