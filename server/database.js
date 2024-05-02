@@ -13,27 +13,41 @@ db.connect((err) => {
 });
 
 export const databaseFunction = {
-    getUserId: async (username) => {
-        const sql = 'SELECT id FROM utente WHERE username = ?';
-        const [results] = await db.promise().query(sql, [username]);
-        return results[0].id;
-    }, getPublicNotesByUser: async (userId) => {
-        const sql = 'SELECT * FROM appunto WHERE autore = ? AND visibilita = ?';
-        const [results] = await db.promise().query(sql, [userId, 1]);
-        return results;
-    }, getAllNotesByUser: async (userId) => {
-        const sql = 'SELECT * FROM appunto WHERE autore = ?';
-        const [results] = await db.promise().query(sql, [userId]);
-        return results;
-    }, insertRating: async (username, appuntoId, rating) => {
-        const checkSql = 'SELECT * FROM valutazione WHERE idUtente = (SELECT id FROM utente WHERE username = ?) AND idAppunto = ?';
-        const [results] = await db.promise().query(checkSql, [username, appuntoId]);
-        if (results.length === 0) {
-            const insertSql = 'INSERT INTO valutazione (idUtente, idAppunto, valore) VALUES ((SELECT id FROM utente WHERE username = ?), ?, ?)';
-            const [insertResults] = await db.promise().query(insertSql, [username, appuntoId, rating]);
-            return insertResults;
-        } else {
-            return null;
-        }
-    },
-};
+        getUserId: async (username) => {
+            const sql = 'SELECT id FROM utente WHERE username = ?';
+            const [results] = await db.promise().query(sql, [username]);
+            return results[0].id;
+        }, getPublicNotesByUser: async (userId) => {
+            const sql = 'SELECT * FROM appunto WHERE autore = ? AND visibilita = ?';
+            const [results] = await db.promise().query(sql, [userId, 1]);
+            for (let i = 0; i < results.length; i++) {
+                results[i].averageRating = await databaseFunction.getAverageRating(results[i].id);
+            }
+            return results;
+        },
+        getAllNotesByUser: async (userId) => {
+            const sql = 'SELECT * FROM appunto WHERE autore = ?';
+            const [results] = await db.promise().query(sql, [userId]);
+            for (let i = 0; i < results.length; i++) {
+                results[i].averageRating = await databaseFunction.getAverageRating(results[i].id);
+            }
+            return results;
+        }, getAverageRating: async (appuntoId) => {
+            const sql = 'SELECT AVG(valore) as averageRating FROM valutazione WHERE idAppunto = ?';
+            const [results] = await db.promise().query(sql, [appuntoId]);
+            return results[0].averageRating;
+        },
+        insertRating:
+            async (username, appuntoId, rating) => {
+                const checkSql = 'SELECT * FROM valutazione WHERE idUtente = (SELECT id FROM utente WHERE username = ?) AND idAppunto = ?';
+                const [results] = await db.promise().query(checkSql, [username, appuntoId]);
+                if (results.length === 0) {
+                    const insertSql = 'INSERT INTO valutazione (idUtente, idAppunto, valore) VALUES ((SELECT id FROM utente WHERE username = ?), ?, ?)';
+                    const [insertResults] = await db.promise().query(insertSql, [username, appuntoId, rating]);
+                    return insertResults;
+                } else {
+                    return null;
+                }
+            },
+    }
+;
