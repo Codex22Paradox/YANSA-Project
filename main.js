@@ -2,13 +2,15 @@ import {createRequire} from "module";
 import {databaseFunction} from "./server/database.js";
 import session from 'express-session';
 import jwt from 'jsonwebtoken';
-
+import {fileURLToPath} from 'url';
+import {dirname} from 'path';
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
 const express = require('express');
 const path = require('path');
 const app = express();
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 // Utilizza il middleware express.json() per analizzare le richieste JSON
 app.use(express.json());
 
