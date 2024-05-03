@@ -17,9 +17,9 @@ app.listen(3000, () => {
 });
 
 
-app.get('/notesAccount/:username', async (req, res) => {
+app.get('/notesAccount/:username/:username2', async (req, res) => {
     const username = req.params.username;
-    const username2 = req.params.username;
+    const username2 = req.params.username2;
     try {
         if (username !== username2) {
             const appunti = await databaseFunction.getPublicNotesByUser(username);
