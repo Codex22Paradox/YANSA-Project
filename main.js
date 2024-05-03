@@ -94,9 +94,14 @@ app.post('/login', async (req, res) => {
     try {
         const result = await databaseFunction.login(username, password);
         if (result) {
-            res.status(200).json({login: true});
+            // Crea un token
+            const token = jwt.sign({id: username}, 'your-secret-key', {
+                expiresIn: 2 * 60 * 60 // scade in 2 ore
+            });
+            // Restituisce il token
+            res.status(200).json({auth: true, token: token});
         } else {
-            res.status(401).json({login: false});
+            res.status(401).json({auth: false, token: null});
         }
     } catch (error) {
         console.error(error);
