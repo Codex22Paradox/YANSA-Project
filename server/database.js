@@ -2,7 +2,7 @@ import {createRequire} from "module";
 
 const require = createRequire(import.meta.url);
 const mysql = require('mysql2');
-const dbConfig = require("./asset.json");
+const dbConfig = require("../assets/conf.json");
 const types = ['titolo', 'testo']; // Tipi di componenti da cercare
 const db = mysql.createConnection(dbConfig);
 db.connect((err) => {
@@ -61,4 +61,10 @@ export const databaseFunction = {
         const [resultsComponente] = await db.promise().query(sqlComponente, [searchString, searchString, pattern, types]);
         return {resultsAppunto, resultsComponente};
     },
+    login: async (username, password) => {
+        const sql = 'SELECT * FROM utente WHERE username = ? AND password = ?';
+        const [results] = await db.promise().query(sql, [username, password]);
+        return results.length > 0;
+    },
+
 };

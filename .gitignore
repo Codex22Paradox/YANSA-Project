@@ -130,3 +130,5 @@ dist
 .pnp.*
 .idea
 .public/assets
+assets/conf.json
+assets/token.json
