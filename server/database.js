@@ -3,7 +3,7 @@ import {createRequire} from "module";
 const require = createRequire(import.meta.url);
 const mysql = require('mysql2');
 const dbConfig = require("./asset.json");
-
+const types = ['titolo', 'testo']; // Tipi di componenti da cercare
 const db = mysql.createConnection(dbConfig);
 db.connect((err) => {
     if (err) {
@@ -55,10 +55,10 @@ export const databaseFunction = {
             throw new Error('Search string cannot be empty');
         }
         const pattern = '%' + searchString + '%';
-        const sqlAppunto = 'SELECT id, nome, (LENGTH(nome) - LENGTH(REPLACE(nome, ?, ""))) / LENGTH(?) as count FROM appunto WHERE nome LIKE ?';
-        const sqlComponente = 'SELECT idAppunto, (LENGTH(contenuto) - LENGTH(REPLACE(contenuto, ?, ""))) / LENGTH(?) as count FROM componente WHERE contenuto LIKE ? GROUP BY idAppunto';
+        const sqlAppunto = 'SELECT id, nome, (LENGTH(nome) - LENGTH(REPLACE(nome, ?, ""))) / LENGTH(?) as count FROM appunto WHERE nome LIKE ? ORDER BY count DESC';
+        const sqlComponente = 'SELECT idAppunto, (LENGTH(contenuto) - LENGTH(REPLACE(contenuto, ?, ""))) / LENGTH(?) as count FROM componente WHERE contenuto LIKE ? AND tipo IN (?) GROUP BY idAppunto ORDER BY count DESC';
         const [resultsAppunto] = await db.promise().query(sqlAppunto, [searchString, searchString, pattern]);
-        const [resultsComponente] = await db.promise().query(sqlComponente, [searchString, searchString, pattern]);
+        const [resultsComponente] = await db.promise().query(sqlComponente, [searchString, searchString, pattern, types]);
         return {resultsAppunto, resultsComponente};
     },
 };
