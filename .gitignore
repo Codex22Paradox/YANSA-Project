@@ -129,6 +129,5 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .idea
-.public/assets
-assets/conf.json
-assets/token.json
+public/assets
+assets

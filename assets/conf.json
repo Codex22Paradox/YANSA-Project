@@ -1,7 +1,0 @@
-{
-  "host": "serverfapakslapa.ddns.net",
-  "port": 3306,
-  "database": "YANSA",
-  "user": "YANSA",
-  "password": "YANSApassword"
-}
