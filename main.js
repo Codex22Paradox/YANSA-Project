@@ -1,10 +1,9 @@
 import {createRequire} from "module";
 import {databaseFunction} from "./server/database.js";
-
+const require = createRequire(import.meta.url);
 const express = require('express');
 const path = require('path');
 const app = express();
-const require = createRequire(import.meta.url);
 
 // Utilizza il middleware express.json() per analizzare le richieste JSON
 app.use(express.json());
