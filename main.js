@@ -3,6 +3,7 @@ import {databaseFunction} from "./server/database.js";
 import session from 'express-session';
 import jwt from 'jsonwebtoken';
 import multer from 'multer';
+import {v4 as uuidv4} from 'uuid';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
@@ -114,3 +115,73 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.post('/updateUsername', async (req, res) => {
+    const oldUsername = req.body.oldUsername;
+    const newUsername = req.body.newUsername;
+    try {
+        const result = await databaseFunction.updateUsername(oldUsername, newUsername);
+        if (result.affectedRows > 0) {
+            res.status(200).json({message: 'Username updated successfully'});
+        } else {
+            res.status(404).json({message: 'Username not found'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.post('/updateEmail', async (req, res) => {
+    const username = req.body.username;
+    const newEmail = req.body.newEmail;
+    try {
+        const result = await databaseFunction.updateEmail(username, newEmail);
+        if (result.affectedRows > 0) {
+            res.status(200).json({message: 'Email updated successfully'});
+        } else {
+            res.status(404).json({message: 'Username not found'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.post('/updatePassword', async (req, res) => {
+    const username = req.body.username;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    try {
+        const result = await databaseFunction.updatePassword(username, oldPassword, newPassword);
+        if (result.affectedRows > 0) {
+            res.status(200).json({message: 'Password updated successfully'});
+        } else {
+            res.status(404).json({message: 'Username not found'});
+        }
+    } catch (error) {
+        if (error.message === 'Old password is incorrect') {
+            res.status(401).json({message: 'Old password is incorrect'});
+        } else {
+            console.error(error);
+            res.status(500).send('Server error');
+        }
+    }
+});
+
+app.post('/updateProfilePicture', multer().single('profilePicture'), async (req, res) => {
+    const username = req.body.username;
+    const profilePicture = req.file;
+    try {
+        const uniqueName = uuidv4() + '_' + profilePicture.originalname;
+        await megaFunction.uploadFileToStorage(uniqueName, profilePicture.buffer);
+        const result = await databaseFunction.updateProfilePicture(username, uniqueName);
+        if (result.affectedRows > 0) {
+            res.status(200).json({message: 'Profile picture updated successfully'});
+        } else {
+            res.status(404).json({message: 'Username not found'});
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});

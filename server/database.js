@@ -66,5 +66,30 @@ export const databaseFunction = {
         const [results] = await db.promise().query(sql, [username, password]);
         return results.length > 0;
     },
-
+    updateUsername: async (oldUsername, newUsername) => {
+        const sql = 'UPDATE utente SET username = ? WHERE username = ?';
+        const [results] = await db.promise().query(sql, [newUsername, oldUsername]);
+        return results;
+    },
+    updateEmail: async (username, newEmail) => {
+        const sql = 'UPDATE utente SET mail = ? WHERE username = ?';
+        const [results] = await db.promise().query(sql, [newEmail, username]);
+        return results;
+    },
+    updatePassword: async (username, oldPassword, newPassword) => {
+        const checkSql = 'SELECT * FROM utente WHERE username = ? AND password = ?';
+        const [checkResults] = await db.promise().query(checkSql, [username, oldPassword]);
+        if (checkResults.length > 0) {
+            const sql = 'UPDATE utente SET password = ? WHERE username = ?';
+            const [results] = await db.promise().query(sql, [newPassword, username]);
+            return results;
+        } else {
+            throw new Error('Old password is incorrect');
+        }
+    },
+    updateProfilePicture: async (username, newImagePath) => {
+        const sql = 'UPDATE utente SET img = ? WHERE username = ?';
+        const [results] = await db.promise().query(sql, [newImagePath, username]);
+        return results;
+    },
 };

@@ -130,4 +130,5 @@ dist
 .idea
 /assets/conf.json
 /assets/token.json
-
+/assets/mega.json
+assets
