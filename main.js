@@ -2,8 +2,11 @@ import {createRequire} from "module";
 import {databaseFunction} from "./server/database.js";
 import session from 'express-session';
 import jwt from 'jsonwebtoken';
+import multer from 'multer';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
+import {megaFunction} from "./server/mega.js";
+
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
 const express = require('express');
@@ -110,3 +113,4 @@ app.post('/login', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
