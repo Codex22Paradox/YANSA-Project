@@ -160,9 +160,9 @@ export const databaseFunction = {
     },
 
     modifyComponentContent: async (pos, newContent) => {
-        const sql = `UPDATE component
+        const sql = `UPDATE componente
                      SET contenuto = ?
-                     WHERE pos = ?`;
+                     WHERE posizione = ?`;
         try {
             const result = db.promise().query(sql, [newContent, pos]);
             return result;
