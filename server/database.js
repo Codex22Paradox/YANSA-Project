@@ -159,6 +159,18 @@ export const databaseFunction = {
         }
     },
 
+    modifyComponentContent: async (pos, newContent) => {
+        const sql = `UPDATE component
+            SET contenuto = ?
+            WHERE pos = ?`;
+        try {
+            const result = db.promise().query(sql, [newContent, id]);
+            return result;
+        } catch (error) {
+            return null;
+        }
+    },
+
     getNote: async (title) => {
         const sql = `SELECT a.nome,
                             a.visibilita,
@@ -354,6 +366,17 @@ export const databaseFunction = {
             const result = await db.promise().query(sql, [username]);
             return result[0];
         } catch (error) {
+            return null;
+        }
+    },
+
+    getAccountData: async (username) => {
+        const sql = `SELECT username, mail, img FROM utente WHERE username = ?`;
+        try {
+            const result = db.promise().query(sql, [username]);
+            return result;
+        } catch (error) {
+            console.log(error);
             return null;
         }
     }

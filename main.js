@@ -274,6 +274,20 @@ app.post('/unfollowCategory', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+//added, modified e moved sono array che contengono i componenti modificati
+app.post('/saveNote/modify', async (req, res) => {
+    const added = req.body.added;
+    const modified = req.body.modified;
+    const moved = req.body.moved;
+    const title = req.body.title;
+    try {
+        modified.forEach((element) => {
+
+        });
+    } catch (error) {
+        res.status(500).send("Something went wrong");
+    }
+})
 
 //Metodi get
 app.get('/notesAccount/:username/:username2', async (req, res) => {
@@ -308,7 +322,9 @@ app.get('/:username', async (req, res) => {
     const userId = req.userId;
     try {
         let userData = await databaseFunction.getAccountData(username);
-        userData = userData[0];
+        userData = userData[0][0];
+        console.log("res")
+        console.log(userData)
         if (userData.username === userId) {
             userData = {
                 username: userData.username, mail: userData.mail, img: userData.img
@@ -318,9 +334,9 @@ app.get('/:username', async (req, res) => {
                 username: userData.username, img: userData.img
             }
         }
-        res.json(userData);
+        res.json({"Result": JSON.stringify(userData) });
     } catch (error) {
-        res.status(500).send('Internal Server Error');
+        res.status(500).send('a Internal Server Error');
     }
 });
 app.get('/getNote/:title', async (req, res) => {
