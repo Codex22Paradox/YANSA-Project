@@ -160,12 +160,27 @@ export const databaseFunction = {
     },
 
     getNoteData: async (title) => {
-        const sql = `SELECT a.nome, a.visibilita, u.username, a.dataCreazione, a.dataModifica 
-        FROM appunto AS a JOIN utente AS u ON a.autore = u.id
-        WHERE nome = ?`;
+        const sql = `SELECT a.id, a.nome, a.visibilita, u.username, a.dataCreazione, a.dataModifica, c.nome AS nomeCat
+        FROM appunto AS a
+        JOIN utente AS u ON a.autore = u.id
+        JOIN categoriaAppunto AS ca ON a.id = ca.idAppunto
+        JOIN categoria AS c ON ca.idCategoria = c.id
+        WHERE a.nome = ?`;
         try {
             const [results] = await db.promise().query(sql, [title]);
-            return results;
+            const returnable = {
+                id: results[0].id,
+                nome: results[0].nome,
+                visibilita: results[0].visibilita,
+                username: results[0].username,
+                dataCreazione: results[0].dataCreazione,
+                dataModifica: results[0].dataModifica,
+                categorie: []
+            }
+            results.forEach((element) => {
+                returnable.categorie.push(element.nomeCat);
+            })
+            return returnable;
         } catch (error) {
             return null;
         }
@@ -177,6 +192,21 @@ export const databaseFunction = {
             const [results] = await db.promise().query(sql, [noteTitle]);
             return results;
         } catch (error) {
+            return null;
+        }
+    },
+    
+    getAllNotesByCategory: async (category) => {
+        const sql = `SELECT a.nome
+        FROM appunto AS a
+        JOIN categoriaAppunto AS ca ON a.id = ca.idAppunto
+        JOIN categoria AS c ON ca.idCategoria = c.id
+        WHERE c.nome = ? AND a.visibilita <> 0`;
+        try {
+            const results = await db.promise().query(sql, [category]);
+            return results[0];
+        } catch (error) {
+            console.log(error)
             return null;
         }
     }

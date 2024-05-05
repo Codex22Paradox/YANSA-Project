@@ -282,3 +282,51 @@ app.get('/getNote/:title', async (req, res) => {
         res.status(500).send("a Internal server error");
     }
 })
+
+app.post('/feed', async (req, res) => {
+    const type = req.body.type;
+    const userId = req.userId;
+
+})
+
+app.get('/s/getNote/:title', async (req, res) => {
+    const title = req.params.title;
+    const username = req.userId;
+    console.log("username")
+    console.log(username)
+    try {
+        const result = await databaseFunction.getNoteData(title);
+        if(username === result.username){
+            console.log("res");
+            console.log(result)
+            res.status(200).json({ "Result": JSON.stringify(result) })
+        }else{
+            if(result[0].visibilita !== 0){
+                res.status(200).json({ "Result": JSON.stringify(result) })
+            }else{
+                res.status(401).json({ "Result": "Unauthorized" })
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("a Internal server error");
+    }
+})
+
+app.get('/category/:category', async (req, res) => {
+    const categoria = req.params.category;
+    const username = req.userId;
+    try {
+        const result = await databaseFunction.getAllNotesByCategory(categoria);
+        const results = []
+        result.forEach(async (element) => {
+            const resultTmp = await databaseFunction.getNoteData(element.nome);
+            result.push(resultTmp);
+        })
+        res.status(200).json({ "result": result });
+    } catch (error) {
+        console.log("errm")
+        console.log(error)
+        res.status(500).send("Something went wrong");
+    }
+});
