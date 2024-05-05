@@ -161,10 +161,10 @@ export const databaseFunction = {
 
     modifyComponentContent: async (pos, newContent) => {
         const sql = `UPDATE component
-            SET contenuto = ?
-            WHERE pos = ?`;
+                     SET contenuto = ?
+                     WHERE pos = ?`;
         try {
-            const result = db.promise().query(sql, [newContent, id]);
+            const result = db.promise().query(sql, [newContent, pos]);
             return result;
         } catch (error) {
             return null;
@@ -358,10 +358,11 @@ export const databaseFunction = {
     },
 
     getFollowedUsers: async (username) => {
-        const sql = `SELECT u2.username FROM utente AS u 
-        JOIN utenteFollow AS uf ON u.id = uf.idUtenteSegue
-        JOIN utente AS u2 ON u2.id = uf.idUtenteSeguito
-        WHERE u.username = ?`;
+        const sql = `SELECT u2.username
+                     FROM utente AS u
+                              JOIN utenteFollow AS uf ON u.id = uf.idUtenteSegue
+                              JOIN utente AS u2 ON u2.id = uf.idUtenteSeguito
+                     WHERE u.username = ?`;
         try {
             const result = await db.promise().query(sql, [username]);
             return result[0];
@@ -371,7 +372,9 @@ export const databaseFunction = {
     },
 
     getAccountData: async (username) => {
-        const sql = `SELECT username, mail, img FROM utente WHERE username = ?`;
+        const sql = `SELECT username, mail, img
+                     FROM utente
+                     WHERE username = ?`;
         try {
             const result = db.promise().query(sql, [username]);
             return result;
@@ -379,5 +382,66 @@ export const databaseFunction = {
             console.log(error);
             return null;
         }
-    }
+    },
+    getFeed: async (username) => {
+        const sql = `
+            SELECT appunto.id, appunto.nome, appunto.visibilita, appunto.autore, AVG(valutazione.valore) as rating
+            FROM appunto
+                     LEFT JOIN valutazione ON appunto.id = valutazione.idAppunto
+            WHERE appunto.autore IN (SELECT idUtenteSeguito
+                                     FROM utenteFollow
+                                     WHERE idUtenteSegue = (SELECT id FROM utente WHERE username = ?))
+              AND appunto.dataCreazione >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY appunto.id
+            ORDER BY rating DESC
+        `;
+        try {
+            const result = await db.promise().query(sql, [username]);
+            return result[0];
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    getFeedByCategories: async (username, categories) => {
+        const categoriesString = categories.map(category => `'${category}'`).join(',');
+
+        const sql = `
+            SELECT appunto.id, appunto.nome, appunto.visibilita, appunto.autore, AVG(valutazione.valore) as rating
+            FROM appunto
+                     LEFT JOIN valutazione ON appunto.id = valutazione.idAppunto
+                     INNER JOIN categoriaAppunto ON appunto.id = categoriaAppunto.idAppunto
+                     INNER JOIN categoria ON categoriaAppunto.idCategoria = categoria.id
+            WHERE categoria.nome IN (${categoriesString})
+              AND appunto.visibilita = 1
+              AND appunto.dataCreazione >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+            GROUP BY appunto.id
+            ORDER BY rating DESC
+        `;
+        try {
+            const result = await db.promise().query(sql);
+            return result[0];
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    getFollowedCategories: async (username) => {
+        // Prima query: otteniamo l'ID dell'utente
+        const getUserIdSql = 'SELECT id FROM utente WHERE username = ?';
+        const [userIdResult] = await db.promise().query(getUserIdSql, [username]);
+        const userId = userIdResult[0].id;
+
+        // Seconda query: otteniamo gli ID delle categorie seguite dall'utente
+        const getFollowedCategoriesIdSql = 'SELECT idCategoria FROM categoriaFollow WHERE idUtente = ?';
+        const [followedCategoriesIdResult] = await db.promise().query(getFollowedCategoriesIdSql, [userId]);
+        const followedCategoriesIds = followedCategoriesIdResult.map(row => row.idCategoria);
+
+        // Terza query: otteniamo i nomi delle categorie corrispondenti agli ID
+        const getCategoriesNamesSql = 'SELECT nome FROM categoria WHERE id IN (?)';
+        const [categoriesNamesResult] = await db.promise().query(getCategoriesNamesSql, [followedCategoriesIds]);
+
+        // Creiamo un array con i nomi delle categorie
+        return categoriesNamesResult.map(row => row.nome);
+    },
 };

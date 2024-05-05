@@ -158,10 +158,11 @@ app.post('/saveNote/new', async (req, res) => {
     try {
         const result = await databaseFunction.saveNewNote(note);
         if (result.affectedRows > 0) {
-            blocks.forEach(async (element, i) => {
+            for (const element of blocks) {
+                const i = blocks.indexOf(element);
                 console.log(JSON.stringify(element.data))
                 const results = await databaseFunction.saveComponent(element, result.insertId, i);
-            });
+            }
             res.status(200).json({"Result": "OK"});
         } else {
             res.status(500).json({"Result": "Action failed"});
@@ -177,21 +178,21 @@ app.post('/feed', async (req, res) => {
     console.log("type")
     console.log(type)
     try {
-        if(type == "user"){
+        if(type === "user"){
             console.log("aaaaa")
             const result = await databaseFunction.getFollowedUsers(username);
             console.log("res");
             console.log(result);
             const array = [];
-            result.forEach(async element => {
+            for (const element of result) {
                 const tmp = await databaseFunction.getPublicNotesByUser(userId);
                 console.log("tmp")
                 console.log(tmp)
                 array.push(tmp);
-            })
+            }
             console.log("res2")
             console.log(array);
-        }else if(type == "category"){
+        }else if(type === "category"){
 
         }
     } catch (error) {
