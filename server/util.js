@@ -1,4 +1,4 @@
-import { databaseFunction } from "./database";
+import { databaseFunction } from "./database.js";
 
 export const createNoteJson = (array) => {
     array.sort((a, b) => a.posizione - b.posizione);

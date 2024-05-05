@@ -172,8 +172,31 @@ app.post('/saveNote/new', async (req, res) => {
 })
 app.post('/feed', async (req, res) => {
     const type = req.body.type;
-    const userId = req.userId;
+    const username = req.userId;
+    const userId = await databaseFunction.getUserId(username)
+    console.log("type")
+    console.log(type)
+    try {
+        if(type == "user"){
+            console.log("aaaaa")
+            const result = await databaseFunction.getFollowedUsers(username);
+            console.log("res");
+            console.log(result);
+            const array = [];
+            result.forEach(async element => {
+                const tmp = await databaseFunction.getPublicNotesByUser(userId);
+                console.log("tmp")
+                console.log(tmp)
+                array.push(tmp);
+            })
+            console.log("res2")
+            console.log(array);
+        }else if(type == "category"){
 
+        }
+    } catch (error) {
+        res.status(500).send("Something went wrong");
+    }
 })
 app.post('/register', async (req, res) => {
     const username = req.body.username;
@@ -330,9 +353,7 @@ app.get('/s/getNote/:title', async (req, res) => {
     console.log(username)
     try {
         const result = await databaseFunction.getNoteData(title);
-        if (username === result.username) {
-            console.log("res");
-            console.log(result)
+        if (username === result.username) { 
             res.status(200).json({"Result": JSON.stringify(result)})
         } else {
             if (result[0].visibilita !== 0) {
