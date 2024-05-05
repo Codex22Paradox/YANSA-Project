@@ -92,4 +92,92 @@ export const databaseFunction = {
         const [results] = await db.promise().query(sql, [newImagePath, username]);
         return results;
     },
+
+    /*
+    {
+        title: "title",
+        author: "autor",
+        date: "date"
+    }
+    */
+    saveNewNote: async (note) => {
+        const getSql = `SELECT nome, autore FROM appunto WHERE nome = ? AND autore = (
+            SELECT u.id FROM utente AS u WHERE u.username = ?
+        )`;
+        const [getResults] = await db.promise().query(getSql, [note.title, note.author]);
+        if(getResults.length == 0){
+            const sql = `INSERT INTO appunto (nome, autore, dataCreazione) VALUES (?, ?, ?)`;
+            try {
+                const idSql = 'SELECT id FROM utente WHERE username = ?';
+                const [userId] = await db.promise().query(idSql, [note.author]);
+                const [results] = await db.promise().query(sql, [note.title, userId[0].id, note.date]);
+                return results;
+            } catch (error) {
+                return null;
+            }
+        }else{
+            return null;
+        }
+    },
+
+    saveComponent: async (element, id, position) => {
+        const sql = `INSERT INTO componente (idAppunto, tipo, posizione, contenuto) VALUES (?, ?, ?, ?)`;
+        try {
+            const elemData = JSON.stringify(element.data);
+            const [result] = db.promise().query(sql, [id, element.type, position, elemData]);
+            return result;
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
+    },
+
+    modifyComponentPos: async (element, newPos) => {
+        const sql = `UPDATE componente SET posizione = ? WHERE id = ?`;
+        try {
+            const [result] = db.promise().query(sql, [newPos, element]);
+            return result;
+        } catch (error) {
+            return null;
+        }
+    },
+
+    getNote: async (title) => {
+        const sql = `SELECT a.nome, a.visibilita, a.dataCreazione, a.dataModifica, u.username, c.tipo, c.posizione, c.contenuto 
+        FROM appunto AS a 
+        JOIN componente AS c ON a.id = c.idAppunto 
+        JOIN utente AS u ON u.id = a.autore 
+        WHERE a.nome = ?`;
+        try {
+            const [results] = await db.promise().query(sql, [title]);
+            console.log("res1")
+            console.log(results)
+            return results;
+        } catch (error) {
+            console.log(error)
+            return null;
+        }
+    },
+
+    getNoteData: async (title) => {
+        const sql = `SELECT a.nome, a.visibilita, u.username, a.dataCreazione, a.dataModifica 
+        FROM appunto AS a JOIN utente AS u ON a.autore = u.id
+        WHERE nome = ?`;
+        try {
+            const [results] = await db.promise().query(sql, [title]);
+            return results;
+        } catch (error) {
+            return null;
+        }
+    },
+
+    deleteNote: async (noteTitle) => {
+        const sql = `DELETE FROM appunto WHERE nome = ?`;
+        try {
+            const [results] = await db.promise().query(sql, [noteTitle]);
+            return results;
+        } catch (error) {
+            return null;
+        }
+    }
 };

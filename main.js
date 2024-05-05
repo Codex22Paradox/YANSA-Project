@@ -7,6 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
+import {createNoteJson} from "./server/util.js"
 
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
@@ -47,7 +48,7 @@ app.use((req, res, next) => {
             next();
         });
     }
-});
+});/**/
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
 });
@@ -101,7 +102,7 @@ app.post('/login', async (req, res) => {
         const result = await databaseFunction.login(username, password);
         if (result) {
             // Crea un token
-            const token = jwt.sign({id: username}, 'your-secret-key', {
+            const token = jwt.sign({id: username}, tokenConfig.secret, {
                 expiresIn: 2 * 60 * 60 // scade in 2 ore
             });
             // Restituisce il token
@@ -185,3 +186,99 @@ app.post('/updateProfilePicture', multer().single('profilePicture'), async (req,
         res.status(500).send('Server error');
     }
 });
+
+
+app.get('/:username', async (req, res) => {
+    const username = req.params.username;
+    const userId = req.userId;
+    try {
+        let userData = await databaseFunction.getAccountData(username);
+        userData = userData[0];
+        if(userData.username  == userId){
+            userData = {
+                username: userData.username,
+                mail: userData.mail,
+                img: userData.img
+            }
+        }else{
+            userData = {
+                username: userData.username,
+                img: userData.img
+            }
+        }
+        res.json(userData);
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+//TODO: capire cosa succede con (object.savecomponents)
+app.post('/saveNote/new', async (req, res) => {
+    let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+    const note = {
+        title: req.body.title,
+        author: req.userId,
+        date: date
+    }
+    const blocks = req.body.contents;
+    try {
+        const result = await databaseFunction.saveNewNote(note);
+        if(result.affectedRows > 0){
+            blocks.forEach(async (element, i) => {
+                console.log(JSON.stringify(element.data))
+                const results = await databaseFunction.saveComponent(element, result.insertId, i);
+            });
+            res.status(200).json({ "Result": "OK" });
+        }else{
+            res.status(500).json({ "Result": "Action failed" });
+        }
+    } catch (error) {
+        res.status(500).send("a Internal server error");
+    }
+})
+
+app.delete('/deleteNote/:title', async (req, res) =>{
+    const title = req.params.title;
+    const userName = req.userId;
+    try {
+        const result = await databaseFunction.getNoteData(title);
+        console.log("res")
+        console.log(result)
+        if (result[0].username === userName) {
+            const delRes = await databaseFunction.deleteNote(title);
+            if(delRes !== null){
+                res.status(200).json({ "Result": "ok" });
+            }else{
+                res.status(500).json({ "Result": "Something went wrong" });
+            }
+        }else{
+            res.status(401).send("Unauthorized");
+        }
+    } catch (error) {
+        res.status(500).send("a Internal server error");
+    }
+})
+
+app.get('/getNote/:title', async (req, res) => {
+    const title = req.params.title;
+    const username = req.userId;
+    console.log("username")
+    console.log(username)
+    try {
+        const result = await databaseFunction.getNote(title);
+        if(username === result[0].username){
+            const note = createNoteJson(result);
+            res.status(200).json({ "Result": JSON.stringify(note) })
+        }else{
+            if(result[0].visibilita !== 0){
+                const note = createNoteJson(result);
+                res.status(200).json({ "Result": JSON.stringify(note) })
+            }else{
+                res.status(401).json({ "Result": "Unauthorized" })
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("a Internal server error");
+    }
+})
