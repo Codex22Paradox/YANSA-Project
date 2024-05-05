@@ -391,12 +391,10 @@ app.get('/category/:category', async (req, res) => {
         const results = []
         for (const element of result) {
             const resultTmp = await databaseFunction.getNoteData(element.nome);
-            result.push(resultTmp);
+            results.push(resultTmp);
         }
-        res.status(200).json({"result": result});
+        res.status(200).json({"Result": JSON.stringify(results)});
     } catch (error) {
-        console.log("errm")
-        console.log(error)
         res.status(500).send("Something went wrong");
     }
 });
