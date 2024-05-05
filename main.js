@@ -342,8 +342,6 @@ app.get('/:username', async (req, res) => {
 app.get('/getNote/:title', async (req, res) => {
     const title = req.params.title;
     const username = req.userId;
-    console.log("username")
-    console.log(username)
     try {
         const result = await databaseFunction.getNote(title);
         if (username === result[0].username) {
@@ -369,10 +367,12 @@ app.get('/s/getNote/:title', async (req, res) => {
     console.log(username)
     try {
         const result = await databaseFunction.getNoteData(title);
+        console.log("res")
+        console.log(result)
         if (username === result.username) { 
             res.status(200).json({"Result": JSON.stringify(result)})
         } else {
-            if (result[0].visibilita !== 0) {
+            if (result.visibilita !== 0) {
                 res.status(200).json({"Result": JSON.stringify(result)})
             } else {
                 res.status(401).json({"Result": "Unauthorized"})
