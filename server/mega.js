@@ -1,5 +1,5 @@
 import {createRequire} from "module";
-import {Storage} from "megajs";
+import {File, Storage} from "megajs";
 import * as url from "url";
 import * as path from "path";
 import fs from 'fs';
@@ -14,21 +14,32 @@ const conf = JSON.parse(fs.readFileSync(path.join(__dirname, '../assets/mega.jso
 const storage = new Storage({
     email: conf.email, password: conf.password,
 }).ready;
+let folder;
+const root = await storage;
+const existingFolder = root.find(conf.directory);
+if (existingFolder) {
+    folder = existingFolder;
+} else {
+    folder = await root.mkdir(conf.directory);
+}
 
 export const megaFunction = {
-    findFileInStorage: async (name) => {
-        const filePath = path.join('YANSA', name); // Aggiunge il nome della cartella al nome del file
-        return await storage.find(filePath);
-    }, getFileFromStorage: async (name) => {
-        const filePath = path.join('YANSA', name); // Aggiunge il nome della cartella al nome del file
-        const file = await (await storage).find(filePath);
-        if (file) {
-            return file; // Restituisce l'oggetto File se esiste
-        } else {
-            throw new Error('File not found'); // Lancia un errore se il file non esiste
+    uploadFileToStorage: async (name, data) => {
+        const filePath = path.join(name);
+        console.log(filePath);
+        const file = await folder.upload(filePath, data).complete;
+        const link = await file.link();
+        console.log(link);
+        return link;
+    }, downloadFileFromLink: async (link) => {
+        try {
+            const file = await File.fromURL(link, {downloadWorkers: 4}); // Utilizza il metodo fromURL della classe File
+            await file.loadAttributes(); // Assicurati che il file sia completamente caricato
+            const stream = file.download(); // Scarica il file come un flusso di dati
+            const fileName = file.name; // Recupera il nome del file
+            return {stream, fileName};
+        } catch (error) {
+            console.error(error);
         }
-    }, uploadFileToStorage: async (name, data) => {
-        const filePath = path.join(__dirname, 'YANSA', name); // Crea il percorso del file nella cartella YANSA
-        await (await storage).upload(filePath, data).complete;
     },
 }

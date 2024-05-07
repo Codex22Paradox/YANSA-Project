@@ -8,6 +8,8 @@ import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
 import {createNoteJson} from "./server/util.js"
+import fs from "fs";
+
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
 const express = require('express');
@@ -25,7 +27,7 @@ app.use(session({
 }));
 // Middleware per verificare il token
 app.use((req, res, next) => {
-    if (req.path === '/login' || req.path === '/register') {
+    if (req.path === '/login' || req.path === '/register' || req.path === '/upload') {
         // Salta la verifica del token per le rotte /login e /register
         next();
     } else {
@@ -178,7 +180,7 @@ app.post('/feed', async (req, res) => {
     console.log("type")
     console.log(type)
     try {
-        if(type === "user"){
+        if (type === "user") {
             console.log("aaaaa")
             const result = await databaseFunction.getFollowedUsers(username);
             console.log("res");
@@ -192,7 +194,7 @@ app.post('/feed', async (req, res) => {
             }
             console.log("res2")
             console.log(array);
-        }else if(type === "category"){
+        } else if (type === "category") {
 
         }
     } catch (error) {
@@ -335,7 +337,7 @@ app.get('/:username', async (req, res) => {
                 username: userData.username, img: userData.img
             }
         }
-        res.json({"Result": JSON.stringify(userData) });
+        res.json({"Result": JSON.stringify(userData)});
     } catch (error) {
         res.status(500).send('a Internal Server Error');
     }
@@ -370,7 +372,7 @@ app.get('/s/getNote/:title', async (req, res) => {
         const result = await databaseFunction.getNoteData(title);
         console.log("res")
         console.log(result)
-        if (username === result.username) { 
+        if (username === result.username) {
             res.status(200).json({"Result": JSON.stringify(result)})
         } else {
             if (result.visibilita !== 0) {
@@ -422,4 +424,39 @@ app.delete('/deleteNote/:title', async (req, res) => {
     } catch (error) {
         res.status(500).send("a Internal server error");
     }
-})
+});
+
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 500 * 1024 * 1024, // limita la dimensione del file a 5MB
+    },
+    allowUploadBuffering: true, // abilita il buffering del file
+});
+
+app.post('/upload', upload.single('file'), async (req, res) => {
+    try {
+        const file = req.file; // Accedi al file caricato
+        const fileName = path.basename(file.originalname); // Estrai solo il nome del file
+        const link = await megaFunction.uploadFileToStorage(fileName, file.buffer); // Carica il file su Mega
+        console.log('File caricato con successo. Path: ', fileName);
+        res.status(200).json({"Result": fileName, "link": link}); // Restituisci solo il nome del file e il link
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Errore del server');
+    }
+});
+
+app.post('/download', async (req, res) => {
+    const link = req.body.mega;
+    const name = req.body.name;
+    try {
+        const {stream, fileName} = await megaFunction.downloadFileFromLink(link); // Scarica il file da Mega
+        res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
+        stream.pipe(res); // Invia il flusso di dati al client
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Errore del server');
+    }
+});
