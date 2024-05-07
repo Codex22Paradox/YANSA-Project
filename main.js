@@ -8,8 +8,6 @@ import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
 import {createNoteJson} from "./server/util.js"
-import fs from "fs";
-
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
 const express = require('express');
@@ -450,7 +448,6 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
 app.post('/download', async (req, res) => {
     const link = req.body.mega;
-    const name = req.body.name;
     try {
         const {stream, fileName} = await megaFunction.downloadFileFromLink(link); // Scarica il file da Mega
         res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
