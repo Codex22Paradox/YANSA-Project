@@ -164,8 +164,7 @@ export const databaseFunction = {
                      SET contenuto = ?
                      WHERE posizione = ?`;
         try {
-            const result = db.promise().query(sql, [newContent, pos]);
-            return result;
+            return db.promise().query(sql, [newContent, id]);
         } catch (error) {
             return null;
         }
@@ -376,8 +375,7 @@ export const databaseFunction = {
                      FROM utente
                      WHERE username = ?`;
         try {
-            const result = db.promise().query(sql, [username]);
-            return result;
+            return db.promise().query(sql, [username]);
         } catch (error) {
             console.log(error);
             return null;

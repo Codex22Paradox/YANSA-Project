@@ -5,10 +5,23 @@ body {
     background-color: #020202;
 }
 
+.bg-dark {
+    background-color: #020202 !important;
+}
+
 h1 {
-    font-family: "Lexend Deca", sans-serif;
     font-size: 2.9375rem; /* 4.7em * 16px */
     color: #fff;
+    font-family: "Lexend", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
+}
+
+#avatar-container {
+    background: none;
+    border: none;
+    padding: 0;
 }
 
 h2 {
@@ -357,34 +370,6 @@ a.article:hover {
     object-fit: cover; /* Mantiene le proporzioni dell'immagine */
 }
 
-.tooltip .tooltip-inner {
-    background-color: #8044C5; /* Colore di sfondo del tooltip */
-}
-
-.tooltip.bs-tooltip-top .arrow::before,
-.tooltip.bs-tooltip-auto[data-popper-placement^="top"] .arrow::before {
-    border-top-color: #8044C5; /* Colore della freccia del tooltip */
-}
-
-.tooltip.bs-tooltip-right .arrow::before,
-.tooltip.bs-tooltip-auto[data-popper-placement^="right"] .arrow::before {
-    border-right-color: #8044C5;
-}
-
-.tooltip.bs-tooltip-bottom .arrow::before,
-.tooltip.bs-tooltip-auto[data-popper-placement^="bottom"] .arrow::before {
-    border-bottom-color: #8044C5;
-}
-
-.tooltip.bs-tooltip-left .arrow::before,
-.tooltip.bs-tooltip-auto[data-popper-placement^="left"] .arrow::before {
-    border-left-color: #8044C5;
-}
-
-.tooltip .tooltip-inner {
-    color: #ffffff; /* Colore del testo del tooltip */
-    font-family: "Lexend", sans-serif; /* Font del tooltip */
-}
 
 #spinner {
     display: flex;
@@ -779,6 +764,7 @@ a.article:hover {
     padding: 15px 15px;
     border-bottom-right-radius: 40px;
     border-top-right-radius: 40px;
+    z-index: 9999;
 }
 
 .tab {
@@ -799,3 +785,77 @@ a.article:hover {
 .tab:hover {
     background-color: rgb(223, 223, 223);
 }
+
+.card {
+    width: 400px;
+    background-color: #157145;
+    border-radius: 10px;
+}
+
+.tools {
+    display: flex;
+    align-items: center;
+    padding: 9px;
+}
+
+.circle {
+    padding: 0 4px;
+}
+
+.box {
+    display: inline-block;
+    align-items: center;
+    width: 10px;
+    height: 10px;
+    padding: 1px;
+    border-radius: 50%;
+}
+
+.red {
+    background-color: #ff605c;
+}
+
+.yellow {
+    background-color: #ffbd44;
+}
+
+.green {
+    background-color: #00ca4e;
+}
+
+.masonry-container {
+    margin-left: 4rem; /* Imposta il margine sinistro a 2rem */
+    overflow-y: auto; /* Permette lo scorrimento verticale se necessario */
+    height: 100vh; /* Imposta l'altezza al 100% dell'altezza della viewport */
+}
+
+.truncate-md {
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+}
+
+.truncate-sm {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.truncate-xl {
+    display: -webkit-box;
+    -webkit-line-clamp: 12;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+

@@ -8,6 +8,7 @@ import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
 import {createNoteJson} from "./server/util.js"
+
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
 const express = require('express');
@@ -25,7 +26,7 @@ app.use(session({
 }));
 // Middleware per verificare il token
 app.use((req, res, next) => {
-    if (req.path === '/login' || req.path === '/register' || req.path === '/upload') {
+    if (req.path === '/login' || req.path === '/register') {
         // Salta la verifica del token per le rotte /login e /register
         next();
     } else {
@@ -178,7 +179,7 @@ app.post('/feed', async (req, res) => {
     console.log("type")
     console.log(type)
     try {
-        if (type === "user") {
+        if (type == "user") {
             console.log("aaaaa")
             const result = await databaseFunction.getFollowedUsers(username);
             console.log("res");
@@ -192,7 +193,7 @@ app.post('/feed', async (req, res) => {
             }
             console.log("res2")
             console.log(array);
-        } else if (type === "category") {
+        } else if (type == "category") {
 
         }
     } catch (error) {
@@ -288,8 +289,20 @@ app.post('/saveNote/modify', async (req, res) => {
     } catch (error) {
         res.status(500).send("Something went wrong");
     }
-})
-
+});
+app.post('categoryFeed', async (req, res) => {
+    let category = req.body.category;
+    const username = req.userId;
+    if (category === null) {
+        category = databaseFunction.getFollowedCategories(username);
+    }
+    try {
+        const result = await databaseFunction.getFeedByCategories(category);
+        res.status(200).json(result);
+    } catch (error) {
+        res.status(500).send("Something went wrong");
+    }
+});
 //Metodi get
 app.get('/notesAccount/:username/:username2', async (req, res) => {
     const username = req.params.username;
@@ -318,6 +331,75 @@ app.get('/searchNotes/:searchString', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
+app.get('/getNote/:title', async (req, res) => {
+    const title = req.params.title;
+    const username = req.userId;
+    console.log("username")
+    console.log(username)
+    try {
+        const result = await databaseFunction.getNote(title);
+        if (username === result[0].username) {
+            const note = createNoteJson(result);
+            res.status(200).json({"Result": JSON.stringify(note)})
+        } else {
+            if (result[0].visibilita !== 0) {
+                const note = createNoteJson(result);
+                res.status(200).json({"Result": JSON.stringify(note)})
+            } else {
+                res.status(401).json({"Result": "Unauthorized"})
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("a Internal server error");
+    }
+});
+app.get('/s/getNote/:title', async (req, res) => {
+    const title = req.params.title;
+    const username = req.userId;
+    console.log("username")
+    console.log(username)
+    try {
+        const result = await databaseFunction.getNoteData(title);
+        if (username === result.username) {
+            res.status(200).json({"Result": JSON.stringify(result)})
+        } else {
+            if (result[0].visibilita !== 0) {
+                res.status(200).json({"Result": JSON.stringify(result)})
+            } else {
+                res.status(401).json({"Result": "Unauthorized"})
+            }
+        }
+    } catch (error) {
+        console.log(error)
+        res.status(500).send("a Internal server error 2");
+    }
+});
+app.get('/category/:category', async (req, res) => {
+    const categoria = req.params.category;
+    const username = req.userId;
+    try {
+        const result = await databaseFunction.getAllNotesByCategory(categoria);
+        const results = []
+        for (const element of result) {
+            const resultTmp = await databaseFunction.getNoteData(element.nome);
+            results.push(resultTmp);
+        }
+        res.status(200).json({"Result": JSON.stringify(results)});
+    } catch (error) {
+        res.status(500).send("Something went wrong");
+    }
+});
+app.get('/userFeed', async (req, res) => {
+    const username = req.userId;
+    try {
+        const feed = await databaseFunction.getFeed(username);
+        res.json(feed);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
 app.get('/:username', async (req, res) => {
     const username = req.params.username;
     const userId = req.userId;
@@ -338,65 +420,6 @@ app.get('/:username', async (req, res) => {
         res.json({"Result": JSON.stringify(userData)});
     } catch (error) {
         res.status(500).send('a Internal Server Error');
-    }
-});
-app.get('/getNote/:title', async (req, res) => {
-    const title = req.params.title;
-    const username = req.userId;
-    try {
-        const result = await databaseFunction.getNote(title);
-        if (username === result[0].username) {
-            const note = createNoteJson(result);
-            res.status(200).json({"Result": JSON.stringify(note)})
-        } else {
-            if (result[0].visibilita !== 0) {
-                const note = createNoteJson(result);
-                res.status(200).json({"Result": JSON.stringify(note)})
-            } else {
-                res.status(401).json({"Result": "Unauthorized"})
-            }
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(500).send("a Internal server error");
-    }
-})
-app.get('/s/getNote/:title', async (req, res) => {
-    const title = req.params.title;
-    const username = req.userId;
-    console.log("username")
-    console.log(username)
-    try {
-        const result = await databaseFunction.getNoteData(title);
-        console.log("res")
-        console.log(result)
-        if (username === result.username) {
-            res.status(200).json({"Result": JSON.stringify(result)})
-        } else {
-            if (result.visibilita !== 0) {
-                res.status(200).json({"Result": JSON.stringify(result)})
-            } else {
-                res.status(401).json({"Result": "Unauthorized"})
-            }
-        }
-    } catch (error) {
-        console.log(error)
-        res.status(500).send("a Internal server error");
-    }
-})
-app.get('/category/:category', async (req, res) => {
-    const categoria = req.params.category;
-    const username = req.userId;
-    try {
-        const result = await databaseFunction.getAllNotesByCategory(categoria);
-        const results = []
-        for (const element of result) {
-            const resultTmp = await databaseFunction.getNoteData(element.nome);
-            results.push(resultTmp);
-        }
-        res.status(200).json({"Result": JSON.stringify(results)});
-    } catch (error) {
-        res.status(500).send("Something went wrong");
     }
 });
 
@@ -422,38 +445,6 @@ app.delete('/deleteNote/:title', async (req, res) => {
     } catch (error) {
         res.status(500).send("a Internal server error");
     }
-});
+})
 
 
-const upload = multer({
-    storage: multer.memoryStorage(),
-    limits: {
-        fileSize: 500 * 1024 * 1024, // limita la dimensione del file a 5MB
-    },
-    allowUploadBuffering: true, // abilita il buffering del file
-});
-
-app.post('/upload', upload.single('file'), async (req, res) => {
-    try {
-        const file = req.file; // Accedi al file caricato
-        const fileName = path.basename(file.originalname); // Estrai solo il nome del file
-        const link = await megaFunction.uploadFileToStorage(fileName, file.buffer); // Carica il file su Mega
-        console.log('File caricato con successo. Path: ', fileName);
-        res.status(200).json({"Result": fileName, "link": link}); // Restituisci solo il nome del file e il link
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Errore del server');
-    }
-});
-
-app.post('/download', async (req, res) => {
-    const link = req.body.mega;
-    try {
-        const {stream, fileName} = await megaFunction.downloadFileFromLink(link); // Scarica il file da Mega
-        res.setHeader('Content-Disposition', 'attachment; filename=' + fileName);
-        stream.pipe(res); // Invia il flusso di dati al client
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Errore del server');
-    }
-});
