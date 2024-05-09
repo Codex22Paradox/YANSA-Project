@@ -66,34 +66,32 @@ settings
     </button>
 </div>
 <div class="container-fluid mt-3">
-    <div class="row d-flex align-items-center position-sticky top-0 fixed-top bg-dark border-3l">
-        <div class="col-auto">
+    <div class="row d-flex align-items-center position-sticky top-0 fixed-top bg-dark rounded-3 ">
+        <div class="col-auto ">
             <h1>Il tuo feed</h1>
         </div>
         <div class="col-auto">
-
             <ul class="nav nav-underline text-white">
                 <li class="nav-item">
                     <h2 class="nav-link active text-white" aria-current="page" href="#">Esplora <span
                             class="material-symbols-rounded align-middle">explore</span></h2>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white">Categorie <span
+                    <a class="nav-link text-white" data-bs-toggle="offcanvas" data-bs-target="#offCanvasCategorie"
+                       aria-controls="offcanvasScrolling">Categorie <span
                             class="material-symbols-rounded align-middle">category</span></a>
                 </li>
             </ul>
         </div>
         <div class="col-auto ms-auto">
-            <div>
-                <button class="btn" id="avatar-container" type="button" data-bs-toggle="popover" title=""
-                        data-bs-content="<button id='logout' class='btn btn-outline-danger btn-sm align-middle'>Logout <span class='material-symbols-rounded align-middle'>logout</span></button>"
-                        data-bs-html="true">
-                    <img src="./images/Logo.png" alt="avatar"
-                         class="rounded-circle d-flex align-self-start shadow-1-strong border border-2 border-light"
-                         width="50" height="50" id="avatar"
-                    >
-                </button>
-            </div>
+            <button class="btn" id="avatar-container" type="button" data-bs-toggle="popover" title=""
+                    data-bs-content="<button id='logout' class='btn btn-outline-danger btn-sm align-middle'>Logout <span class='material-symbols-rounded align-middle'>logout</span></button>"
+                    data-bs-html="true">
+                <img src="./images/Logo.png" alt="avatar"
+                     class="rounded-circle d-flex align-self-start shadow-1-strong border border-2 border-light"
+                     width="50" height="50" id="avatar"
+                >
+            </button>
         </div>
     </div>
 
@@ -448,6 +446,30 @@ settings
         </div>
     </div>
 
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offCanvasCategorie"
+         aria-labelledby="offcanvasExampleLabel" data-bs-theme="dark" data-bs-scroll="false" data-bs-backdrop="true">
+        <div class="offcanvas-header">
+            <h2 class="offcanvas-title" id="offcanvasExampleLabel">Categorie</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Some text as placeholder. In real life you can have the elements you have chosen. Like, text, images,
+                lists, etc.
+            </div>
+            <div class="dropdown mt-3">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Dropdown button
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <script src="./home.js"></script>
 </body>

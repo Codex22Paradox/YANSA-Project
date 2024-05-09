@@ -18,6 +18,11 @@ h1 {
     font-style: normal;
 }
 
+.offcanvas {
+    background-color: #020202;
+    --bs-offcanvas-width: 40vh;
+}
+
 #avatar-container {
     background: none;
     border: none;
