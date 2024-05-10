@@ -984,4 +984,17 @@ a.article:hover {
     width: 1px;
 }
 
+.ce-block__content {
+    padding: 0.625rem;
+}
+
+#editorjs-container {
+    width: 55%; /* Imposta la larghezza al 100% della larghezza del contenitore padre */
+    min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
+    background-color: #ffffff; /* Imposta il colore di sfondo su bianco */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
 
