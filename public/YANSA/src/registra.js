@@ -61,3 +61,30 @@ document
       document.getElementById("visibilityToggle2").innerHTML = "visibility";
     }
   });
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    if (
+      document.getElementById("password").value ==
+      document.getElementById("confPass").value
+    ) {
+      register(
+        document.getElementById("username").value,
+        document.getElementById("password").value,
+        document.getElementById("email").value
+      ).then((value) => {
+        if (value.registration) {
+          window.location.href = "./accedi.html";
+        } else {
+          alert("utente già esistente");
+        }
+      });
+      document.getElementById("username").value = "";
+      document.getElementById("email").value = "";
+      document.getElementById("password").value = "";
+      document.getElementById("confPass").value = "";
+    } else {
+      alert("password diverse!");
+    }
+  }
+});
