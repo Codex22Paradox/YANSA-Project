@@ -39,3 +39,21 @@ document
       document.getElementById("visibilityToggle").innerHTML = "visibility";
     }
   });
+
+document.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    login(
+      document.getElementById("username").value,
+      document.getElementById("password").value
+    ).then((value) => {
+      if (value.auth) {
+        sessionStorage.setItem("token", value.token);
+        window.location.href = "./home.html";
+      } else {
+        alert("Credenziali errate");
+      }
+    });
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
+  }
+});
