@@ -33,7 +33,9 @@ document
     let passwordField = document.getElementById("password");
     if (passwordField.type === "password") {
       passwordField.type = "text";
+      document.getElementById("visibilityToggle").innerHTML = "visibility_off";
     } else {
       passwordField.type = "password";
+      document.getElementById("visibilityToggle").innerHTML = "visibility";
     }
   });
