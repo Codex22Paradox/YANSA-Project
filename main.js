@@ -179,7 +179,7 @@ app.post('/feed', async (req, res) => {
     console.log("type")
     console.log(type)
     try {
-        if (type == "user") {
+        if (type === "user") {
             console.log("aaaaa")
             const result = await databaseFunction.getFollowedUsers(username);
             console.log("res");
@@ -193,7 +193,7 @@ app.post('/feed', async (req, res) => {
             }
             console.log("res2")
             console.log(array);
-        } else if (type == "category") {
+        } else if (type === "category") {
 
         }
     } catch (error) {
@@ -216,6 +216,9 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+
+
 app.post('/followUser', async (req, res) => {
     const followerUsername = req.userId;
     const followedUsername = req.body.username;
@@ -290,7 +293,7 @@ app.post('/saveNote/modify', async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-app.post('categoryFeed', async (req, res) => {
+app.post('/categoryFeed', async (req, res) => {
     let category = req.body.category;
     const username = req.userId;
     if (category === null) {
