@@ -48,3 +48,12 @@ export const createFeed = async (array) => {
     array.sort((a, b) => b.valutazione - a.valutazione);
     return array;
 }
+
+export const executeMove = async (posIniz, amount) => {
+    try {
+        const result = await databaseFunction.modifyComponentPos(posIniz, posIniz+amount);
+        return result;
+    } catch (error) {
+        return null;
+    }
+}

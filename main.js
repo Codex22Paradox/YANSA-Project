@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import {megaFunction} from "./server/mega.js";
-import {createNoteJson} from "./server/util.js"
+import {createNoteJson, executeMove} from "./server/util.js"
 
 const require = createRequire(import.meta.url);
 const tokenConfig = require("./assets/token.json");
@@ -283,13 +283,40 @@ app.post('/unfollowCategory', async (req, res) => {
 app.post('/saveNote/modify', async (req, res) => {
     const added = req.body.added;
     const modified = req.body.modified;
-    const moved = req.body.moved;
+    const deleted = req.body.moved;
     const title = req.body.title;
+    console.log(title);
     try {
-        modified.forEach((element) => {
-
+        let noteId = await databaseFunction.getNoteData(title);
+        console.log(noteId);
+        noteId = noteId.id;
+        modified.forEach(async (element) => {
+            const result = await databaseFunction.modifyComponentContent(noteId, element.pos, element.data);
         });
+        let offset = 0;
+        let componentNum = await databaseFunction.getNumComponents(noteId);
+        deleted.sort((a, b) => a.pos - b.pos);
+        deleted.forEach(async (element) => {
+            const result = await databaseFunction.deleteComponent(element.pos + offset);
+            for (let i = element.pos + offset + 1; i < componentNum; i++) {
+                const result2 = await executeMove(i, -1); 
+            }
+            offset--;
+        });
+        offset = 0;
+        componentNum = await databaseFunction.getNumComponents(noteId);
+        added.sort((a, b) => a.pos - b.pos);
+        added.forEach(async (element) => {
+            for (let i = componentNum - 1; i < element.pos; i--) {
+                const result2 = await executeMove(i, 1);
+            }
+            const result = await databaseFunction.saveComponent(noteId, element.pos, element.data);
+            offset++;
+        });
+        offset = 0;
+        res.status(200).json({ "result": "ok" });
     } catch (error) {
+        console.log(error);
         res.status(500).send("Something went wrong");
     }
 });
@@ -403,7 +430,7 @@ app.get('/userFeed', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-app.get('/:username', async (req, res) => {
+app.get('/user/:username', async (req, res) => {
     const username = req.params.username;
     const userId = req.userId;
     try {
@@ -425,7 +452,6 @@ app.get('/:username', async (req, res) => {
         res.status(500).send('a Internal Server Error');
     }
 });
-
 
 //Metodi delete
 app.delete('/deleteNote/:title', async (req, res) => {
@@ -449,5 +475,3 @@ app.delete('/deleteNote/:title', async (req, res) => {
         res.status(500).send("a Internal server error");
     }
 })
-
-

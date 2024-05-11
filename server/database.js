@@ -159,12 +159,22 @@ export const databaseFunction = {
         }
     },
 
-    modifyComponentContent: async (pos, newContent) => {
+    modifyComponentContent: async (idNote, pos, newContent) => {
         const sql = `UPDATE componente
                      SET contenuto = ?
-                     WHERE posizione = ?`;
+                     WHERE posizione = ? AND idAppunto = ?`;
         try {
-            return db.promise().query(sql, [newContent, id]);
+            return db.promise().query(sql, [newContent, pos, idNote]);
+        } catch (error) {
+            return null;
+        }
+    },
+
+    deleteComponent: async (pos) => {
+        const sql = `DELETE FROM componente WHERE pos = ?`;
+        try {
+            const result = await db.promise().query(sql, [pos]);
+            return result;
         } catch (error) {
             return null;
         }
@@ -216,6 +226,18 @@ export const databaseFunction = {
                 returnable.categorie.push(element.nomeCat);
             })
             return returnable;
+        } catch (error) {
+            console.log("err")
+            console.log(error);
+            return null;
+        }
+    },
+
+    getNumComponents: async (id) => {
+        const sql = `SELECT COUNT(*) FROM componente WHERE idAppunto = ?`;
+        try {
+            const result = await db.promise().query(sql, [id]);
+            return result;
         } catch (error) {
             return null;
         }
