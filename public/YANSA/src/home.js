@@ -1,5 +1,5 @@
 window.onload = async function () {
-  await prova();
+  await render(document.getElementById("noteContainer"));
 };
 
 const pickData = async () => {
@@ -48,115 +48,78 @@ const prova = async () => {
     obj["contenuto"] = sum;
     tutto.push(obj);
   }
-  console.log(tutto);
+  return tutto;
 };
 
-const render = (listaCard) => {
-  let corpo = `        <div class="col-auto mt-3">
-  <div class="card">
-    <div class="tools justify-content-end"></div>
-    <div class="card__content">
-      <div class="container">
-        <div class="row">
-          <div class="col-auto">
-            <div class="row justify-content-between">
-              <div class="col-auto">
-                <h2 class="text-white">Titolo</h2>
-                <p class="text-white">Autore</p>
-              </div>
-              <div class="col-auto">
-                <p class="text-white">Tempo</p>
-              </div>
-            </div>
-            <p class="text-white truncate-md">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna
-              aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-              ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              Duis aute irure dolor in reprehenderit in voluptate velit
-              esse cillum dolore eu fugiat nulla pariatur. Excepteur
-              sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-auto mt-3">
-  <div class="card">
-    <div class="tools justify-content-end"></div>
-    <div class="card__content">
-      <div class="container">
-        <div class="row">
-          <div class="col-auto">
-            <div class="row justify-content-between">
-              <div class="col-auto">
-                <h2 class="text-white">Titolo</h2>
-                <p class="text-white">Autore</p>
-              </div>
-              <div class="col-auto">
-                <p class="text-white">Tempo</p>
-              </div>
-            </div>
-            <p class="text-white truncate-xl">
-              Sed ut perspiciatis unde omnis iste natus error sit
-              voluptatem accusantium doloremque laudantium, totam rem
-              aperiam, eaque ipsa quae ab illo inventore veritatis et
-              quasi architecto beatae vitae dicta sunt explicabo. Nemo
-              enim ipsam voluptatem quia voluptas sit aspernatur aut
-              odit aut fugit, sed quia consequuntur magni dolores eos
-              qui ratione voluptatem sequi nesciunt. Neque porro
-              quisquam est, qui dolorem ipsum quia dolor sit amet,
-              consectetur, adipisci velit, sed quia non numquam eius
-              modi tempora incidunt ut labore et dolore magnam aliquam
-              quaerat voluptatem. Ut enim ad minima veniam, quis nostrum
-              exercitationem ullam corporis suscipit laboriosam, nisi ut
-              aliquid ex ea commodi consequatur? Quis autem vel eum iure
-              reprehenderit qui in ea voluptate velit esse quam nihil
-              molestiae consequatur, vel illum qui dolorem eum fugiat
-              quo voluptas nulla pariatur?
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="col-auto mt-3">
-  <div class="card">
-    <div class="tools justify-content-end"></div>
-    <div class="card__content">
-      <div class="container">
-        <div class="row">
-          <div class="col-auto">
-            <div class="row justify-content-between">
-              <div class="col-auto">
-                <h2 class="text-white">Titolo</h2>
-                <p class="text-white">Autore</p>
-              </div>
-              <div class="col-auto">
-                <p class="text-white">Tempo</p>
-              </div>
-            </div>
-            <p class="text-white truncate-sm">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-              sed do eiusmod tempor incididunt ut labore et dolore magna
-              aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-              ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              Duis aute irure dolor in reprehenderit in voluptate velit
-              esse cillum dolore eu fugiat nulla pariatur. Excepteur
-              sint occaecat cupidatat non proident, sunt in culpa qui
-              officia deserunt mollit anim id est laborum.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>`;
-  document.getElementById("noteContainer").innerHTML += corpo;
-};
+const render = async (div) => {
+  div.innerHTML = "";
+  const listino = await prova();
+  let output = "";
+  let tronc1 = true;
+  let tronc2 = false;
+  let tronc3 = false;
+  console.log(listino);
 
-render();
+  listino.forEach((appunto) => {
+    let troncatura = "";
+    if (tronc1 && !tronc2 && !tronc3) {
+      troncatura = "truncate-md";
+    } else if (!tronc1 && tronc2 && !tronc3) {
+      troncatura = "truncate-xl";
+    } else if (!tronc1 && !tronc2 && tronc3) {
+      troncatura = "truncate-sm";
+    }
+    let corpo =
+      `        
+    <div class="col-auto mt-3">
+    <div class="card">
+      <div class="tools justify-content-end"></div>
+      <div class="card__content">
+        <div class="container">
+          <div class="row">
+            <div class="col-auto">
+              <div class="row justify-content-between">
+                <div class="col-auto">
+                  <h2 class="text-white"> ` +
+      appunto.titolo +
+      ` </h2>
+                  <p class="text-white">` +
+      appunto.autore +
+      `</p>
+                </div>
+                <div class="col-auto">
+                  <p class="text-white">` +
+      appunto.data +
+      `</p>
+                </div>
+              </div>
+              <p class="text-white ` +
+      troncatura +
+      `">
+              ` +
+      appunto.contenuto +
+      `
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+    output += corpo;
+    if (tronc1 && !tronc2 && !tronc3) {
+      tronc1 = false;
+      tronc2 = true;
+      tronc3 = false;
+    } else if (!tronc1 && tronc2 && !tronc3) {
+      tronc1 = false;
+      tronc2 = false;
+      tronc3 = true;
+    } else if (!tronc1 && !tronc2 && tronc3) {
+      tronc1 = true;
+      tronc2 = false;
+      tronc3 = false;
+    }
+  });
+  div.innerHTML = output;
+};
