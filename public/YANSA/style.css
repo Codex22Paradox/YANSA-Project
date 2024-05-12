@@ -1000,16 +1000,16 @@ a.article:hover {
 }
 
 .tc-table {
-    border-color:  #000; /* Sostituisci con il colore desiderato */
+    border-color: #000; /* Sostituisci con il colore desiderato */
     border-left: 0.0625rem solid #000; /* Sostituisci con il colore desiderato */
 }
 
 .tc-row {
-    border-color:  #000; /* Sostituisci con il colore desiderato */
+    border-color: #000; /* Sostituisci con il colore desiderato */
 }
 
 .tc-cell {
-    border-color:  #000; /* Sostituisci con il colore desiderato */
+    border-color: #000; /* Sostituisci con il colore desiderato */
 }
 
 .wrapperEditor {
@@ -1044,7 +1044,8 @@ a.article:hover {
 
 }
 
-@media (max-width: 48rem) { /* 768px / 16 */
+@media (max-width: 48rem) {
+    /* 768px / 16 */
     .radio-inputsEditor {
         flex-direction: column;
     }
@@ -1055,7 +1056,7 @@ a.article:hover {
     display: block;
     color: rgb(34, 34, 34);
     background: linear-gradient(142.99deg, rgb(217, 217, 217) 15.53%, rgb(243, 243, 243) 88.19%);
-    box-shadow: 0px 0.75rem 1.5rem -0.0625rem rgba(0, 0, 0,0.18);
+    box-shadow: 0px 0.75rem 1.5rem -0.0625rem rgba(0, 0, 0, 0.18);
     border-color: rgba(7, 4, 14, 0);
     border-radius: 3.125rem;
     block-size: 1.25rem;
@@ -1068,11 +1069,20 @@ a.article:hover {
 }
 
 
-
 .input-search[type = "text"]:focus {
     width: 80.5rem;
 }
 
 #noteContainer {
     height: auto !important;
+}
+
+.cdx-simple-image__picture--with-border {
+    border: 2px solid #000000; /* Sostituisci #desiredColor con il colore del bordo desiderato */
+    border-radius: 10px; /* Aggiungi questa linea per smussare gli angoli. Puoi modificare il valore per ottenere la smussatura desiderata */
+
+}
+
+.cdx-simple-image__picture--with-background {
+    background-color: #000000; /* Sostituisci #desiredColor con il colore di sfondo desiderato */
 }

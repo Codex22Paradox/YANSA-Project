@@ -35,7 +35,7 @@
     />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2.28.2/dist/editorjs.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/header@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/list@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@editorjs/inline-code@latest"></script>
@@ -50,12 +50,201 @@
     <script src="https://cdn.jsdelivr.net/npm/editorjs-tooltip"></script>
     <script src="https://cdn.jsdelivr.net/npm/editorjs-drag-drop"></script>
     <script src="https://cdn.jsdelivr.net/npm/editorjs-undo"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/table@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/underline@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@editorjs/simple-image"></script>
+
     <link rel="stylesheet" href="./style.css"/>
 </head>
 
 <body>
-<div id="editorjs-container container">
-    <div id="editorjs"></div>
-</div>
-<script src="./src/editor/editor.js" type="module"></script>
+<div class="container-fluid">
+    <div class="row mt-3">
+        <div class="col-3 text-start mt-3">
+            <div class="row justify-content-start ">
+                <div class="col-8 ">
+                    <div class="form-label-group outline">
+                        <input
+                                type="text"
+                                id="cerca"
+                                class="form-control shadow-none border-light"
+                                placeholder=""
+                        />
+                        <span
+                        ><label for="cerca" class="text-white"
+                        >Cerca</label
+                        ></span
+                        >
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary align-middle btn-lg">Cerca <span
+                            class="material-symbols-rounded align-middle">search</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 text-center">
+            <h1>TITOLO</h1>
+        </div>
+        <div class="col text-end">
+            <div class="row justify-content-end">
+                <div class="col-8">
+                    <div class="form-label-group outline">
+                        <input
+                                type="text"
+                                id="titolo"
+                                class="form-control shadow-none border-light"
+                                placeholder=""
+                                required
+                        />
+                        <span
+                        ><label for="titolo" class="text-white"
+                        >Titolo</label
+                        ></span
+                        >
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-primary align-middle btn-lg">Salva <span
+                            class="material-symbols-rounded align-middle">save</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid mb-3">
+        <div class="row justify-content-between">
+            <div class="col">
+                <div class="radio-inputsEditor">
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 0</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 1</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 2 provaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfgprovaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfg</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 0</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 1</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 2 provaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfgprovaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfg</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 0</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 1</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 2 provaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfgprovaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfg</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 0</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 1</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 2 provaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfgprovaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfg</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 0</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 1</span>
+                </span>
+                        </label>
+                    </div>
+                    <div class="wrapper">
+                        <label>
+                            <input class="radio-input" type="checkbox" name="engine"/>
+                            <span class="radio-tile">
+                  <span class="radio-labelEditor">Categoria 2 provaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfgprovaprovaprovaprofadgdsfgsdfgsdfgsdgsdfgsfgsdfgdsfgdsfg</span>
+                </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-5 rounded-4" id="editorjs-container">
+                <div id="editorjs"></div>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+    </div>
+    <script src="./src/editor/editor.js" type="module"></script>
 </body>
