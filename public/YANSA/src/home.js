@@ -1,5 +1,9 @@
 window.onload = async function () {
-  await render(document.getElementById("noteContainer"));
+  if (sessionStorage.getItem("token") !== null) {
+    await render(document.getElementById("noteContainer"));
+  } else {
+    window.location.href = "./accedi.html";
+  }
 };
 
 const pickData = async () => {
@@ -50,22 +54,7 @@ const prova = async () => {
   }
   return tutto;
 };
-
-const render = async (div) => {
-  div.innerHTML = "";
-  const listino = await prova();
-  let output = "";
-  let controllino = 1;
-  listino.forEach((appunto) => {
-    let troncatura = "";
-    if (controllino === 1) {
-      troncatura = "truncate-md";
-    } else if (controllino === 2) {
-      troncatura = "truncate-xl";
-    } else if (controllino === 3) {
-      troncatura = "truncate-sm";
-    }
-    let template = `        
+let template = `        
     <div class="col-auto mt-3">
     <div class="card">
       <div class="tools justify-content-end"></div>
@@ -89,15 +78,27 @@ const render = async (div) => {
       </div>
     </div>
   </div>`;
-    template = template.replace("%TITOLO", appunto.titolo);
-    template = template.replace("%AUTORE", appunto.autore);
-    template = template.replace(
-      "%DATA",
-      dataIta(appunto.data.substring(0, 10))
-    );
-    template = template.replace("%CONTENUTO", appunto.contenuto);
-    template = template.replace("%TRONCA", troncatura);
-    output += template;
+const render = async (div) => {
+  div.innerHTML = "";
+  const listino = await prova();
+  let output = "";
+  let controllino = 1;
+  listino.forEach((appunto) => {
+    let troncatura = "";
+    if (controllino === 1) {
+      troncatura = "truncate-md";
+    } else if (controllino === 2) {
+      troncatura = "truncate-xl";
+    } else if (controllino === 3) {
+      troncatura = "truncate-sm";
+    }
+    let html = "";
+    html = template.replace("%TITOLO", appunto.titolo);
+    html = html.replace("%AUTORE", appunto.autore);
+    html = html.replace("%DATA", dataIta(appunto.data.substring(0, 10)));
+    html = html.replace("%CONTENUTO", appunto.contenuto);
+    html = html.replace("%TRONCA", troncatura);
+    output += html;
     if (controllino === 1) {
       controllino = 2;
     } else if (controllino === 2) {
