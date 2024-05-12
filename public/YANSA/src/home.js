@@ -99,7 +99,7 @@ const render = async (div) => {
         } else if (controllino === 3) {
             troncatura = "truncate-sm";
         }
-        let html = "";
+        let html;
         html = template.replace("%TITOLO", appunto.titolo);
         html = html.replace("%AUTORE", appunto.autore);
         html = html.replace("%DATA", dataIta(appunto.data.substring(0, 10)));
@@ -131,8 +131,7 @@ const dataIta = (dataEstera) => {
     let giorno = data.getDate();
     let mese = data.getMonth() + 1;
     let anno = data.getFullYear();
-    let dataItaliana = giorno + "/" + mese + "/" + anno;
-    return dataItaliana;
+    return giorno + "/" + mese + "/" + anno;
 };
 
 document.getElementById("newNote").onclick = () => {
