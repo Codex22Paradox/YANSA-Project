@@ -3,7 +3,8 @@ import {createRequire} from "module";
 const require = createRequire(import.meta.url);
 const mysql = require('mysql2');
 const dbConfig = require("../assets/conf.json");
-const types = ['titolo', 'testo']; // Tipi di componenti da cercare
+const types = ['titolo', 'testo', 'paragraph']; // Tipi di componenti da cercare
+const excludeWords = ["text"]
 const db = mysql.createConnection(dbConfig);
 db.connect((err) => {
     if (err) {
@@ -56,17 +57,35 @@ export const databaseFunction = {
     },
 
     searchNotes: async (searchString) => {
-        if (!searchString) {
-            throw new Error('Search string cannot be empty');
+        let results = [];
+        const sql = `
+            SELECT a.id,
+                   a.nome,
+                   a.visibilita,
+                   a.autore,
+                   a.dataCreazione,
+                   a.dataModifica,
+                   ROUND(SUM((LENGTH(LOWER(c.contenuto)) - LENGTH(REPLACE(LOWER(c.contenuto), LOWER(?), ''))) /
+                             LENGTH(LOWER(?)))) AS count
+            FROM appunto AS a
+                     JOIN componente AS c ON a.id = c.idAppunto
+            WHERE c.tipo IN (?)
+              AND MATCH(c.contenuto) AGAINST(? IN BOOLEAN MODE)
+            GROUP BY a.id, a.nome, a.visibilita, a.autore, a.dataCreazione, a.dataModifica
+            ORDER BY count DESC
+        `;
+        try {
+            console.log('Search string:', searchString); // Log the search string
+            const [queryResults] = await db.promise().query(sql, [searchString, searchString, types, '*' + searchString + '*']);
+            // Convert the count to an integer
+            results = queryResults.map(result => ({...result, count: parseInt(result.count)}));
+            console.log('Search results:', results); // Log the results
+            return results;
+        } catch (error) {
+            console.error('Search error:', error); // Log the error
         }
-        const pattern = '%' + searchString + '%';
-        const sqlAppunto = 'SELECT id, nome, (LENGTH(nome) - LENGTH(REPLACE(nome, ?, ""))) / LENGTH(?) as count FROM appunto WHERE nome LIKE ? ORDER BY count DESC';
-        const sqlComponente = 'SELECT idAppunto, (LENGTH(contenuto) - LENGTH(REPLACE(contenuto, ?, ""))) / LENGTH(?) as count FROM componente WHERE contenuto LIKE ? AND tipo IN (?) GROUP BY idAppunto ORDER BY count DESC';
-        const [resultsAppunto] = await db.promise().query(sqlAppunto, [searchString, searchString, pattern]);
-        const [resultsComponente] = await db.promise().query(sqlComponente, [searchString, searchString, pattern, types]);
-        return {resultsAppunto, resultsComponente};
+        return results;
     },
-
     login: async (username, password) => {
         const sql = 'SELECT * FROM utente WHERE username = ? AND password = ?';
         const [results] = await db.promise().query(sql, [username, password]);
