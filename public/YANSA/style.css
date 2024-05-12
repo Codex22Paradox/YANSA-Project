@@ -989,12 +989,90 @@ a.article:hover {
 }
 
 #editorjs-container {
-    width: 55%; /* Imposta la larghezza al 100% della larghezza del contenitore padre */
     min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
     background-color: #ffffff; /* Imposta il colore di sfondo su bianco */
     margin-left: auto;
     margin-right: auto;
 }
 
+.ce-header {
+    color: #000000;
+}
+
+.tc-table {
+    border-color:  #000; /* Sostituisci con il colore desiderato */
+    border-left: 0.0625rem solid #000; /* Sostituisci con il colore desiderato */
+}
+
+.tc-row {
+    border-color:  #000; /* Sostituisci con il colore desiderato */
+}
+
+.tc-cell {
+    border-color:  #000; /* Sostituisci con il colore desiderato */
+}
+
+.wrapperEditor {
+    display: inline-block;
+    margin-right: 10px; /* Aggiungi un margine a destra per separare i checkbox */
+}
+
+.radio-inputsEditor {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    overflow-y: auto; /* Aggiunge una barra di scorrimento se necessario */
+    max-height: 80em; /* Imposta l'altezza massima a 20 righe */
+}
+
+.radio-labelEditor {
+    color: #707070;
+    transition: 0.375s ease;
+    text-align: center;
+    font-size: 0.8125rem; /* 13px / 16 */
+    white-space: nowrap; /* Impedisce al testo di andare a capo */
+    overflow: hidden; /* Nasconde il testo che fuoriesce dal contenitore */
+    text-overflow: ellipsis; /* Mostra i puntini di sospensione quando il testo fuoriesce */
+    width: 100%; /* Imposta la larghezza del contenitore al 100% */
+    max-width: 12.5rem; /* 200px / 16 */
+
+}
+
+@media (max-width: 48rem) { /* 768px / 16 */
+    .radio-inputsEditor {
+        flex-direction: column;
+    }
+}
 
 
+.input-search[type = "text"] {
+    display: block;
+    color: rgb(34, 34, 34);
+    background: linear-gradient(142.99deg, rgb(217, 217, 217) 15.53%, rgb(243, 243, 243) 88.19%);
+    box-shadow: 0px 0.75rem 1.5rem -0.0625rem rgba(0, 0, 0,0.18);
+    border-color: rgba(7, 4, 14, 0);
+    border-radius: 3.125rem;
+    block-size: 1.25rem;
+    margin: 0.4375rem auto;
+    padding: 1.125rem 0.9375rem;
+    outline: none;
+    text-align: center;
+    width: 35rem;
+    transition: 0.5s;
+}
+
+
+
+.input-search[type = "text"]:focus {
+    width: 80.5rem;
+}
+
+#noteContainer {
+    height: auto !important;
+}
