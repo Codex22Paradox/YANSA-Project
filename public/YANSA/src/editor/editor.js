@@ -172,6 +172,7 @@ editor.isReady
           });
         });
     } else if (sessionStorage.getItem("editorType") === "view") {
+      editor.readOnly.toggle();
       fetch("/getNote/" + sessionStorage.getItem("noteName"), {
         method: "GET",
         headers: {
@@ -263,3 +264,9 @@ saveButton.onclick = () => {
     });
   }
 };
+
+window.onbeforeunload = () => {
+  sessionStorage.removeItem("editorType");
+  sessionStorage.removeItem("noteName");
+  sessionStorage.removeItem("noteAuthor");
+}

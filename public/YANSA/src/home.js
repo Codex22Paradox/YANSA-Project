@@ -120,7 +120,11 @@ const render = async (div) => {
         document.getElementById(appunto.id).addEventListener('click', function () {
             sessionStorage.setItem("noteName", appunto.titolo);
             sessionStorage.setItem("noteAuthor", appunto.autore);
-            sessionStorage.setItem("editorType", "view");
+            if (appunto.autore == sessionStorage.getItem("username")) {
+                sessionStorage.setItem("editorType", "modify");
+            }else{
+                sessionStorage.setItem("editorType", "view");
+            }
             window.location.href = "./editor.html";
         });
     });
