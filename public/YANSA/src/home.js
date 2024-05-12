@@ -55,22 +55,17 @@ const render = async (div) => {
   div.innerHTML = "";
   const listino = await prova();
   let output = "";
-  let tronc1 = true;
-  let tronc2 = false;
-  let tronc3 = false;
-  console.log(listino);
-
+  let controllino = 1;
   listino.forEach((appunto) => {
     let troncatura = "";
-    if (tronc1 && !tronc2 && !tronc3) {
+    if (controllino === 1) {
       troncatura = "truncate-md";
-    } else if (!tronc1 && tronc2 && !tronc3) {
+    } else if (controllino === 2) {
       troncatura = "truncate-xl";
-    } else if (!tronc1 && !tronc2 && tronc3) {
+    } else if (controllino === 3) {
       troncatura = "truncate-sm";
     }
-    let corpo =
-      `        
+    let template = `        
     <div class="col-auto mt-3">
     <div class="card">
       <div class="tools justify-content-end"></div>
@@ -80,46 +75,45 @@ const render = async (div) => {
             <div class="col-auto">
               <div class="row justify-content-between">
                 <div class="col-auto">
-                  <h2 class="text-white"> ` +
-      appunto.titolo +
-      ` </h2>
-                  <p class="text-white">` +
-      appunto.autore +
-      `</p>
+                  <h2 class="text-white">%TITOLO</h2>
+                  <p class="text-white">%AUTORE</p>
                 </div>
                 <div class="col-auto">
-                  <p class="text-white">` +
-      appunto.data +
-      `</p>
+                  <p class="text-white">%DATA</p>
                 </div>
               </div>
-              <p class="text-white ` +
-      troncatura +
-      `">
-              ` +
-      appunto.contenuto +
-      `
-              </p>
+              <p class="text-white %TRONCA">%CONTENUTO</p>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>`;
-    output += corpo;
-    if (tronc1 && !tronc2 && !tronc3) {
-      tronc1 = false;
-      tronc2 = true;
-      tronc3 = false;
-    } else if (!tronc1 && tronc2 && !tronc3) {
-      tronc1 = false;
-      tronc2 = false;
-      tronc3 = true;
-    } else if (!tronc1 && !tronc2 && tronc3) {
-      tronc1 = true;
-      tronc2 = false;
-      tronc3 = false;
+    template = template.replace("%TITOLO", appunto.titolo);
+    template = template.replace("%AUTORE", appunto.autore);
+    template = template.replace(
+      "%DATA",
+      dataIta(appunto.data.substring(0, 10))
+    );
+    template = template.replace("%CONTENUTO", appunto.contenuto);
+    template = template.replace("%TRONCA", troncatura);
+    output += template;
+    if (controllino === 1) {
+      controllino = 2;
+    } else if (controllino === 2) {
+      controllino = 3;
+    } else if (controllino === 3) {
+      controllino = 1;
     }
   });
   div.innerHTML = output;
+};
+
+const dataIta = (dataEstera) => {
+  let data = new Date(dataEstera);
+  let giorno = data.getDate();
+  let mese = data.getMonth() + 1;
+  let anno = data.getFullYear();
+  let dataItaliana = giorno + "/" + mese + "/" + anno;
+  return dataItaliana;
 };
