@@ -124,3 +124,8 @@ const dataIta = (dataEstera) => {
     let dataItaliana = giorno + "/" + mese + "/" + anno;
     return dataItaliana;
 };
+
+document.getElementById("newNote").onclick = () => {
+  sessionStorage.setItem("editorType", "new");
+  window.location.href = "../editor.html"
+}

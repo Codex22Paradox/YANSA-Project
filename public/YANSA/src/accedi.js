@@ -47,6 +47,7 @@ document.addEventListener("keydown", function (event) {
       document.getElementById("password").value
     ).then((value) => {
       if (value.auth) {
+        sessionStorage.setItem("username", document.getElementById("username").value)
         sessionStorage.setItem("token", value.token);
         window.location.href = "./home.html";
       } else {
