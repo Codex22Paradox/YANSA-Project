@@ -43,6 +43,7 @@ const prova = async () => {
     for (let index = 0; index < value.length; index++) {
         let obj = {
             titolo: value[index].nome,
+            id: value[index].id,
         };
         let res = await pickComponent("/getNote/" + value[index].nome);
         obj["data"] = res.dateCreation;
@@ -60,7 +61,7 @@ const prova = async () => {
 };
 let template = `        
     <div class="col-auto mt-3">
-    <div class="card">
+    <div class="card" id="%ID">
       <div class="tools justify-content-end"></div>
       <div class="card__content">
         <div class="container">
@@ -104,6 +105,7 @@ const render = async (div) => {
         html = html.replace("%DATA", dataIta(appunto.data.substring(0, 10)));
         html = html.replace("%CONTENUTO", appunto.contenuto);
         html = html.replace("%TRONCA", troncatura);
+        html = html.replace("%ID", appunto.id);
         output += html;
         if (controllino === 1) {
             controllino = 2;
@@ -114,6 +116,14 @@ const render = async (div) => {
         }
     });
     div.innerHTML = output;
+    listino.forEach((appunto) => {
+        document.getElementById(appunto.id).addEventListener('click', function () {
+            sessionStorage.setItem("noteName", appunto.titolo);
+            sessionStorage.setItem("noteAuthor", appunto.autore);
+            sessionStorage.setItem("editorType", "view");
+            window.location.href = "./editor.html";
+        });
+    });
 };
 
 const dataIta = (dataEstera) => {

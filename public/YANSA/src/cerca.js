@@ -40,7 +40,7 @@ const search = async (testo, cancelToken) => {
 
 const template = `        
     <div class="col-auto mt-3">
-    <div class="card">
+    <div class="card" id="%ID">
       <div class="tools justify-content-end"></div>
       <div class="card__content">
         <div class="container">
@@ -86,6 +86,7 @@ const createArray = async (array) => {
         let obj = {
             titolo: array[index].nome,
             count: array[index].count,
+            id: array[index].id,
         };
         let res = await pickComponent("/getNote/" + array[index].nome);
         obj["data"] = res.dateCreation;
@@ -123,6 +124,7 @@ const render = async (div, array) => {
         html = html.replace("%CONTENUTO", appunto.contenuto);
         html = html.replace("%TRONCA", troncatura);
         html = html.replace("%COUNT", "Ripetizioni: " + appunto.count);
+        html = html.replace("%ID", appunto.id);
         output += html;
         if (controllino === 1) {
             controllino = 2;
@@ -133,6 +135,14 @@ const render = async (div, array) => {
         }
     });
     div.innerHTML = output;
+    array.forEach((appunto) => {
+        document.getElementById(appunto.id).addEventListener('click', function () {
+            sessionStorage.setItem("noteName", appunto.titolo);
+            sessionStorage.setItem("noteAuthor", appunto.autore);
+            sessionStorage.setItem("editorType", "view");
+            window.location.href = "./editor.html";
+        });
+    });
 };
 
 const dataIta = (dataEstera) => {
