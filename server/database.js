@@ -139,7 +139,7 @@ export const databaseFunction = {
                      VALUES (?, ?, ?, ?)`;
         try {
             const elemData = JSON.stringify(element.data);
-            const [result] = db.promise().query(sql, [id, element.type, position, elemData]);
+            const result = db.promise().query(sql, [id, element.type, position, elemData]);
             return result;
         } catch (error) {
             console.log(error)
@@ -147,14 +147,15 @@ export const databaseFunction = {
         }
     },
 
-    modifyComponentPos: async (element, newPos) => {
+    modifyComponentPos: async (oldPos, newPos) => {
         const sql = `UPDATE componente
                      SET posizione = ?
-                     WHERE id = ?`;
+                     WHERE posizione = ?`;
         try {
-            const [result] = db.promise().query(sql, [newPos, element]);
+            const result = db.promise().query(sql, [newPos, oldPos]);
             return result;
         } catch (error) {
+            console.log(error)
             return null;
         }
     },
@@ -171,7 +172,7 @@ export const databaseFunction = {
     },
 
     deleteComponent: async (pos) => {
-        const sql = `DELETE FROM componente WHERE pos = ?`;
+        const sql = `DELETE FROM componente WHERE posizione = ?`;
         try {
             const result = await db.promise().query(sql, [pos]);
             return result;

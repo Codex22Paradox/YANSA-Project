@@ -283,34 +283,36 @@ app.post('/unfollowCategory', async (req, res) => {
 app.post('/saveNote/modify', async (req, res) => {
     const added = req.body.added;
     const modified = req.body.modified;
-    const deleted = req.body.moved;
+    const deleted = req.body.deleted;
     const title = req.body.title;
+    console.log("title")
     console.log(title);
     try {
         let noteId = await databaseFunction.getNoteData(title);
-        console.log(noteId);
         noteId = noteId.id;
         modified.forEach(async (element) => {
-            const result = await databaseFunction.modifyComponentContent(noteId, element.pos, element.data);
+            const result = await databaseFunction.modifyComponentContent(noteId, element.pos, JSON.stringify(element.data));
         });
         let offset = 0;
         let componentNum = await databaseFunction.getNumComponents(noteId);
+        componentNum = componentNum[0][0]["COUNT(*)"];
         deleted.sort((a, b) => a.pos - b.pos);
         deleted.forEach(async (element) => {
             const result = await databaseFunction.deleteComponent(element.pos + offset);
             for (let i = element.pos + offset + 1; i < componentNum; i++) {
-                const result2 = await executeMove(i, -1); 
+                const result2 = await executeMove(i, -1);
             }
             offset--;
         });
         offset = 0;
         componentNum = await databaseFunction.getNumComponents(noteId);
+        componentNum = componentNum[0][0]["COUNT(*)"];
         added.sort((a, b) => a.pos - b.pos);
         added.forEach(async (element) => {
-            for (let i = componentNum - 1; i < element.pos; i--) {
+            for (let i = componentNum - 1; i >= element.pos; i--) {
                 const result2 = await executeMove(i, 1);
             }
-            const result = await databaseFunction.saveComponent(noteId, element.pos, element.data);
+            const result = await databaseFunction.saveComponent(element.data, noteId, element.pos);
             offset++;
         });
         offset = 0;
