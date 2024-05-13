@@ -175,6 +175,8 @@ editor.isReady
                     });
                 });
         } else if (sessionStorage.getItem("editorType") === "view") {
+            document.getElementById("ratingInput").classList.remove("d-none")
+            document.getElementById("titleInput").classList.add("d-none");
             editor.readOnly.toggle();
             fetch("/getNote/" + sessionStorage.getItem("noteName"), {
                 method: "GET",
@@ -279,12 +281,6 @@ saveButton.onclick = () => {
         });
     }
 };
-
-window.onbeforeunload = () => {
-    sessionStorage.removeItem("editorType");
-    sessionStorage.removeItem("noteName");
-    sessionStorage.removeItem("noteAuthor");
-}
 
 document.getElementById('homeButton').onclick = () => {
     window.location.href = './home.html';
