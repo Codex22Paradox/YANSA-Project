@@ -530,8 +530,8 @@ a.article:hover {
 
 
 .typewriter {
-    --blue: #5C86FF;
-    --blue-dark: #275EFE;
+    --blue: #18d77e;
+    --blue-dark: #157145;
     --key: #fff;
     --paper: #EEF0FD;
     --text: #D3D4EC;
@@ -1348,4 +1348,8 @@ line {
         stroke-dashoffset: 439.82;
         transform: translate(100px, 100px) rotate(112deg);
     }
+}
+
+.popover {
+    background-color: #157145; /* Modifica questo valore per ottenere l'effetto desiderato */
 }

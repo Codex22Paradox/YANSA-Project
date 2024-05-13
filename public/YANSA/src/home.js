@@ -149,3 +149,32 @@ document.getElementById("newNote").onclick = () => {
     sessionStorage.setItem("editorType", "new");
     window.location.href = "./editor.html"
 }
+
+let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl, {
+        sanitize: false,
+        customClass: 'green-popover'
+    })
+})
+
+popoverTriggerList.forEach(function (popoverTriggerEl) {
+    popoverTriggerEl.addEventListener('shown.bs.popover', function () {
+        const logout = document.getElementById("logout");
+
+        logout.onclick = () => {
+            console.log("logout");
+            sessionStorage.clear();
+            window.location.href = "./accedi.html";
+        }
+
+        // Aggiungi un listener per l'evento click del documento
+        document.addEventListener('click', function (e) {
+            // Se il click non è sul popover o sui suoi trigger, nascondi il popover
+            if (!popoverTriggerEl.contains(e.target)) {
+                let popover = bootstrap.Popover.getInstance(popoverTriggerEl);
+                popover.hide();
+            }
+        });
+    })
+})
