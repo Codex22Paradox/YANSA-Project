@@ -6,7 +6,7 @@ import multer from 'multer';
 import {v4 as uuidv4} from 'uuid';
 import {fileURLToPath} from 'url';
 import {dirname} from 'path';
-import {megaFunction} from "./server/mega.js";
+//import {megaFunction} from "./server/mega.js";
 import {createNoteJson, executeMove} from "./server/util.js"
 
 const require = createRequire(import.meta.url);
@@ -218,7 +218,6 @@ app.post('/register', async (req, res) => {
 });
 
 
-
 app.post('/followUser', async (req, res) => {
     const followerUsername = req.userId;
     const followedUsername = req.body.username;
@@ -316,7 +315,7 @@ app.post('/saveNote/modify', async (req, res) => {
             offset++;
         });
         offset = 0;
-        res.status(200).json({ "result": "ok" });
+        res.status(200).json({"result": "ok"});
     } catch (error) {
         console.log(error);
         res.status(500).send("Something went wrong");

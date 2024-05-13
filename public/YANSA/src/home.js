@@ -1,6 +1,6 @@
-window.onload = async function () {
+window.onload = async () => {
     if (sessionStorage.getItem("token") !== null) {
-        await render(document.getElementById("noteContainer"));
+        await render(document.getElementById("noteContainer"), document.getElementById("pencil"));
     } else {
         window.location.href = "./accedi.html";
     }
@@ -85,7 +85,7 @@ let template = `
       </div>
     </div>
   </div>`;
-const render = async (div) => {
+const render = async (div, div2) => {
     div.innerHTML = "";
     const listino = await prova();
     let output = "";
@@ -115,6 +115,13 @@ const render = async (div) => {
             controllino = 1;
         }
     });
+    if (listino.length === 0) {
+        div.classList.add("d-none");
+        div2.classList.remove("d-none");
+    } else {
+        div.classList.remove("d-none");
+        div2.classList.add("d-none");
+    }
     div.innerHTML = output;
     listino.forEach((appunto) => {
         document.getElementById(appunto.id).addEventListener('click', function () {
@@ -122,7 +129,7 @@ const render = async (div) => {
             sessionStorage.setItem("noteAuthor", appunto.autore);
             if (appunto.autore == sessionStorage.getItem("username")) {
                 sessionStorage.setItem("editorType", "modify");
-            }else{
+            } else {
                 sessionStorage.setItem("editorType", "view");
             }
             window.location.href = "./editor.html";
@@ -139,6 +146,6 @@ const dataIta = (dataEstera) => {
 };
 
 document.getElementById("newNote").onclick = () => {
-  sessionStorage.setItem("editorType", "new");
-  window.location.href = "../editor.html"
+    sessionStorage.setItem("editorType", "new");
+    window.location.href = "./editor.html"
 }

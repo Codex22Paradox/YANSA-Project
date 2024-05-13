@@ -1,5 +1,10 @@
-let ricercaCorrente = null;
+window.onload = async () => {
+    if (sessionStorage.getItem("token") === null) {
+        window.location.href = "./accedi.html";
+    }
+};
 
+let ricercaCorrente = null;
 const cerca = document.getElementById('cerca');
 const div = document.getElementById('noteContainer');
 const loader = document.getElementById('loader');
@@ -7,7 +12,10 @@ const loader = document.getElementById('loader');
 document.getElementById('homeButton').onclick = () => {
     window.location.href = './home.html';
 };
-
+document.getElementById("newNote").onclick = () => {
+    sessionStorage.setItem("editorType", "new");
+    window.location.href = "./editor.html"
+}
 
 cerca.addEventListener('keydown', async (event) => {
     if (event.key === 'Enter') {
