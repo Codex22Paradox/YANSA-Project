@@ -4,14 +4,17 @@ document.getElementById("accedi").onclick = () => {
     document.getElementById("password").value
   ).then((value) => {
     if (value.auth) {
+      console.log(document.getElementById("username").value)
+      sessionStorage.setItem("username", document.getElementById("username").value)
       sessionStorage.setItem("token", value.token);
       window.location.href = "./home.html";
     } else {
       alert("Credenziali errate");
     }
+    document.getElementById("username").value = "";
+    document.getElementById("password").value = "";
   });
-  document.getElementById("username").value = "";
-  document.getElementById("password").value = "";
+  
 };
 
 const login = async (user, pass) => {
@@ -47,14 +50,16 @@ document.addEventListener("keydown", function (event) {
       document.getElementById("password").value
     ).then((value) => {
       if (value.auth) {
+        console.log(document.getElementById("username").value)
         sessionStorage.setItem("username", document.getElementById("username").value)
         sessionStorage.setItem("token", value.token);
         window.location.href = "./home.html";
       } else {
         alert("Credenziali errate");
       }
+      document.getElementById("username").value = "";
+      document.getElementById("password").value = "";
     });
-    document.getElementById("username").value = "";
-    document.getElementById("password").value = "";
+    
   }
 });

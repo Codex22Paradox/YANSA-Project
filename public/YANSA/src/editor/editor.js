@@ -1,6 +1,7 @@
 const token = sessionStorage.getItem("token"); // Recupera il token dal session storage
 const username = sessionStorage.getItem("username");
 const saveButton = document.getElementById("save");
+const titleInput = document.getElementById("titolo");
 //Inizializza Editor.js
 const editor = new EditorJS({
     /**
@@ -165,6 +166,8 @@ editor.isReady
                 })
                 .then(res => {
                     noteTitle = res.title;
+                    titleInput.value = noteTitle;
+                    document.getElementById("titolo_eff").innerText = noteTitle;
                     editor.render(res.data).then(() => {
                         editor.save().then(data => {
                             snapshot = data;
@@ -196,6 +199,18 @@ editor.isReady
 
 saveButton.onclick = () => {
     if (sessionStorage.getItem("editorType") === "new") {
+        editor.save().then((data) => {
+            fetch("/savenote/new", {
+                method: "POST",
+                headers: {
+                    "content-type": "application/json",
+                    Authorization: sessionStorage.getItem("token")
+                },
+                body: JSON.stringify({ title: document.getElementById("titolo_eff").innerText, contents: data.blocks })
+            }).then((res) => res.json())
+            .then((res) => console.log(res))
+            .catch((err) => console.log(err))
+        })
     } else if (sessionStorage.getItem("editorType") === "modify") {
         editor.save().then(data => {
             const deleted = [];
@@ -277,4 +292,8 @@ document.getElementById('homeButton').onclick = () => {
 
 document.getElementById("searchButton").onclick = () => {
     window.location.href = "./ricerca.html";
+}
+
+titleInput.onblur = () => {
+    document.getElementById("titolo_eff").innerText = titleInput.value;
 }
