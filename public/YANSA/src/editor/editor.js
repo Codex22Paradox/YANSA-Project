@@ -2,6 +2,7 @@ const token = sessionStorage.getItem("token"); // Recupera il token dal session 
 const username = sessionStorage.getItem("username");
 const saveButton = document.getElementById("save");
 const titleInput = document.getElementById("titolo");
+let title = document.getElementById("titolo_eff");
 //Inizializza Editor.js
 const editor = new EditorJS({
     /**
@@ -166,8 +167,10 @@ editor.isReady
                 })
                 .then(res => {
                     noteTitle = res.title;
+                    console.log(res);
                     titleInput.value = noteTitle;
                     document.getElementById("titolo_eff").innerText = noteTitle;
+                    title = title.innerText;
                     editor.render(res.data).then(() => {
                         editor.save().then(data => {
                             snapshot = data;
@@ -191,6 +194,10 @@ editor.isReady
                     return JSON.parse(res.Result);
                 })
                 .then(res => {
+                    noteTitle = res.title;
+                    console.log(res);
+                    titleInput.value = noteTitle;
+                    document.getElementById("titolo_eff").innerText = noteTitle;
                     editor.render(res.data);
                 });
         }
@@ -261,23 +268,49 @@ saveButton.onclick = () => {
                     modified.push({pos: i, data: changed});
                 }
             });
-            fetch("/saveNote/modify", {
-                method: "POST",
-                headers: {
-                    "content-type": "application/json",
-                    Authorization: sessionStorage.getItem("token")
-                },
-                body: JSON.stringify({
-                    added: added,
-                    deleted: deleted,
-                    modified: modified
+            console.log("titleeff")
+            console.log(document.getElementById("titolo_eff"));
+            if(title !== document.getElementById("titolo_eff").innerText){
+                fetch("/saveNote/modify", {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        Authorization: sessionStorage.getItem("token")
+                    },
+                    body: JSON.stringify({
+                        added: added,
+                        deleted: deleted,
+                        modified: modified,
+                        title: title,
+                        newTitle: document.getElementById("titolo_eff").innerText
+                    })
                 })
-            })
-                .then(res => res.json())
-                .then(res => {
-                    console.log("res");
-                    console.log(res);
-                });
+                    .then(res => res.json())
+                    .then(res => {
+                        console.log("res");
+                        console.log(res);
+                    });
+            }else{
+                fetch("/saveNote/modify", {
+                    method: "POST",
+                    headers: {
+                        "content-type": "application/json",
+                        Authorization: sessionStorage.getItem("token")
+                    },
+                    body: JSON.stringify({
+                        added: added,
+                        deleted: deleted,
+                        modified: modified,
+                        title: title,
+                        newTitle: ""
+                    })
+                })
+                    .then(res => res.json())
+                    .then(res => {
+                        console.log("res");
+                        console.log(res);
+                    });
+            }
         });
     }
 };

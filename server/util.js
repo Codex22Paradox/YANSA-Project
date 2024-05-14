@@ -5,7 +5,7 @@ export const createNoteJson = (array) => {
     const json = {
         author: array[0].username,
         dateCreation: array[0].dataCreazione,
-        title: array[0].title,
+        title: array[0].nome,
         visible: array[0].visibilita,
         data: {
             time: new Date(),

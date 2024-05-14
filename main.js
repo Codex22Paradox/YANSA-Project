@@ -284,6 +284,7 @@ app.post('/saveNote/modify', async (req, res) => {
     const modified = req.body.modified;
     const deleted = req.body.deleted;
     const title = req.body.title;
+    const newTitle = req.body.newTitle;
     console.log("title")
     console.log(title);
     try {
@@ -315,6 +316,9 @@ app.post('/saveNote/modify', async (req, res) => {
             offset++;
         });
         offset = 0;
+        if(newTitle !== ""){
+           const result = await databaseFunction.changeNoteTitle(title, newTitle); 
+        }
         res.status(200).json({"result": "ok"});
     } catch (error) {
         console.log(error);
@@ -365,8 +369,6 @@ app.get('/searchNotes/:searchString', async (req, res) => {
 app.get('/getNote/:title', async (req, res) => {
     const title = req.params.title;
     const username = req.userId;
-    console.log("username")
-    console.log(username)
     try {
         const result = await databaseFunction.getNote(title);
         if (username === result[0].username) {
@@ -431,7 +433,7 @@ app.get('/userFeed', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-app.get('/user/:username', async (req, res) => {
+app.get('/user/:username', async (req, res) => { 
     const username = req.params.username;
     const userId = req.userId;
     try {

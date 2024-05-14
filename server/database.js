@@ -484,4 +484,15 @@ export const databaseFunction = {
         // Creiamo un array con i nomi delle categorie
         return categoriesNamesResult.map(row => row.nome);
     },
+    changeNoteTitle: async (oldTitle, newTitle) => {
+        const sql = `UPDATE appunto SET nome = ? WHERE nome = ?`;
+        try {
+            const result = db.promise().query(sql, [newTitle, oldTitle]);
+            return result;
+        } catch (error) {
+            console.log("error")
+            console.log(error)
+            return null;
+        }
+    }
 };
