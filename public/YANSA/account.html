@@ -65,7 +65,33 @@
             class="row d-flex align-items-center position-sticky top-0 fixed-top bg-dark rounded-3"
     >
         <div class="col-auto">
-            <h1>Ricerca Account</h1>
+            <h1>Il tuo feed</h1>
+        </div>
+        <div class="col-auto">
+            <ul class="nav nav-underline text-white">
+                <li class="nav-item">
+                    <button
+                            class="nav-link active text-white"
+                            aria-current="page"
+                            id="buttonAccount"
+                    >
+                        Account
+                        <span class="material-symbols-rounded align-middle"
+                        >group</span
+                        >
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button
+                            class="nav-link text-white"
+                            id="buttonCategorie"
+                    >Categorie
+                        <span class="material-symbols-rounded align-middle"
+                        >category</span
+                        ></button
+                    >
+                </li>
+            </ul>
         </div>
         <div class="col-auto ms-auto">
             <button
@@ -74,7 +100,7 @@
                     type="button"
                     data-bs-toggle="popover"
                     title=""
-                    data-bs-content="<button id='logout' class='btn btn-outline-danger btn-sm align-middle'>Logout <span class='material-symbols-rounded align-middle'>logout</span></button>"
+                    data-bs-content="<span id='logout' class='text-decoration-underline text-white'>Esci dal tuo account</span>"
                     data-bs-html="true"
             >
                 <img
@@ -97,13 +123,13 @@
         </div>
     </div>
     <div
-            class="row masonry masonry-container d-flex align-items-stretch d-none"
+            class="row masonry masonry-container d-flex align-items-stretch "
             data-masonry='{"percentPosition": true }'
             id="noteContainer"
     >
 
     </div>
-    <div class="row justify-content-center mt-5 d-flex align-items-center " id="loader">
+    <div class="row justify-content-center mt-5 d-flex align-items-center" id="loader">
         <div class="loader">
             <div class="loaderMiniContainer">
                 <div class="barContainer">

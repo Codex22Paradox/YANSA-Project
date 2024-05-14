@@ -85,8 +85,7 @@ export const databaseFunction = {
             console.error('Search error:', error); // Log the error
         }
         return results;
-    },
-    login: async (username, password) => {
+    }, login: async (username, password) => {
         const sql = 'SELECT * FROM utente WHERE username = ? AND password = ?';
         const [results] = await db.promise().query(sql, [username, password]);
         return results.length > 0;
@@ -192,7 +191,9 @@ export const databaseFunction = {
     },
 
     deleteComponent: async (pos) => {
-        const sql = `DELETE FROM componente WHERE posizione = ?`;
+        const sql = `DELETE
+                     FROM componente
+                     WHERE posizione = ?`;
         try {
             const result = await db.promise().query(sql, [pos]);
             return result;
@@ -425,8 +426,7 @@ export const databaseFunction = {
             console.log(error);
             return null;
         }
-    },
-    getFeed: async (username) => {
+    }, getFeed: async (username) => {
         const sql = `
             SELECT appunto.id, appunto.nome, appunto.visibilita, appunto.autore, AVG(valutazione.valore) as rating
             FROM appunto
@@ -435,6 +435,7 @@ export const databaseFunction = {
                                      FROM utenteFollow
                                      WHERE idUtenteSegue = (SELECT id FROM utente WHERE username = ?))
               AND appunto.dataCreazione >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+              AND appunto.visibilita = 1
             GROUP BY appunto.id
             ORDER BY rating DESC
         `;
@@ -445,8 +446,7 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    },
-    getFeedByCategories: async (username, categories) => {
+    }, getFeedByCategories: async (username, categories) => {
         const categoriesString = categories.map(category => `'${category}'`).join(',');
 
         const sql = `
@@ -468,8 +468,7 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    },
-    getFollowedCategories: async (username) => {
+    }, getFollowedCategories: async (username) => {
         // Prima query: otteniamo l'ID dell'utente
         const getUserIdSql = 'SELECT id FROM utente WHERE username = ?';
         const [userIdResult] = await db.promise().query(getUserIdSql, [username]);
@@ -486,8 +485,7 @@ export const databaseFunction = {
 
         // Creiamo un array con i nomi delle categorie
         return categoriesNamesResult.map(row => row.nome);
-    },
-    removeCategoriesFromNote: async (noteTitle, author, categories) => {
+    }, removeCategoriesFromNote: async (noteTitle, author, categories) => {
         // Get the note's ID
         const getNoteIdSql = 'SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)';
         const [noteIdResults] = await db.promise().query(getNoteIdSql, [noteTitle, author]);
@@ -502,8 +500,7 @@ export const databaseFunction = {
         const deleteSql = 'DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)';
         const [deleteResults] = await db.promise().query(deleteSql, [noteId, categoryIds]);
         return deleteResults;
-    },
-    addCategoriesToNote: async (noteTitle, author, categories) => {
+    }, addCategoriesToNote: async (noteTitle, author, categories) => {
         // Normalize categories and remove duplicates
         categories = [...new Set(categories.map(category => category.trim().replace(/\s\s+/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())))];
 
@@ -527,9 +524,10 @@ export const databaseFunction = {
             const associateSql = 'INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)';
             await db.promise().query(associateSql, [noteId, categoryId]);
         }));
-    },
-    changeNoteTitle: async (oldTitle, newTitle) => {
-        const sql = `UPDATE appunto SET nome = ? WHERE nome = ?`;
+    }, changeNoteTitle: async (oldTitle, newTitle) => {
+        const sql = `UPDATE appunto
+                     SET nome = ?
+                     WHERE nome = ?`;
         try {
             const result = db.promise().query(sql, [newTitle, oldTitle]);
             return result;
@@ -537,6 +535,33 @@ export const databaseFunction = {
             console.log("error")
             console.log(error)
             return null;
+        }
+    }, searchUsers: async (searchString) => {
+        const sql = `
+            SELECT username
+            FROM utente
+            WHERE MATCH(username) AGAINST(? IN BOOLEAN MODE)
+        `;
+        try {
+            const [results] = await db.promise().query(sql, [searchString + '*']);
+            return results;
+        } catch (error) {
+            console.error('Search error:', error);
+            return [];
+        }
+    },
+    searchCategories: async (searchString) => {
+        const sql = `
+            SELECT nome
+            FROM categoria
+            WHERE MATCH(nome) AGAINST(? IN BOOLEAN MODE)
+        `;
+        try {
+            const [results] = await db.promise().query(sql, [searchString + '*']);
+            return results;
+        } catch (error) {
+            console.error('Search error:', error);
+            return [];
         }
     }
 };

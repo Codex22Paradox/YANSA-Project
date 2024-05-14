@@ -526,3 +526,23 @@ app.post("/addCategory/:title", async (req, res) => {
         res.status(500).json({message: "An error occurred while adding categories", error: error});
     }
 });
+
+app.get('/searchUsers/:searchString', async (req, res) => {
+    const searchString = req.params.searchString;
+    try {
+        const results = await databaseFunction.searchUsers(searchString);
+        res.status(200).json(results);
+    } catch (error) {
+        res.status(500).json({message: 'Internal server error'});
+    }
+});
+
+app.get('/searchCategories/:searchString', async (req, res) => {
+    const searchString = req.params.searchString;
+    try {
+        const results = await databaseFunction.searchCategories(searchString);
+        res.status(200).json(results);
+    } catch (error) {
+        res.status(500).json({error: error.toString()});
+    }
+});
