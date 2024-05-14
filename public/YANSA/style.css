@@ -1372,13 +1372,14 @@ line {
 .rating input:checked ~ label,
 .rating label:hover,
 .rating label:hover ~ label {
-    color: #6f00ff;
+    color: #157145;
     transition: color 0.3s;
 }
 
 .form-control {
     color: white;
 }
+
 .form-control:focus {
     color: white;
 }

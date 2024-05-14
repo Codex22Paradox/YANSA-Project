@@ -316,8 +316,8 @@ app.post('/saveNote/modify', async (req, res) => {
             offset++;
         });
         offset = 0;
-        if(newTitle !== ""){
-           const result = await databaseFunction.changeNoteTitle(title, newTitle); 
+        if (newTitle !== "") {
+            const result = await databaseFunction.changeNoteTitle(title, newTitle);
         }
         res.status(200).json({"result": "ok"});
     } catch (error) {
@@ -346,9 +346,9 @@ app.post('/insertRating/:note', async (req, res) => {
     try {
         const resultNote = await databaseFunction.getNoteData(noteTitle);
         const result = await databaseFunction.insertRating(userName, resultNote.id, rating);
-        if(result){
-            res.status(200).json({ "result": "ok" });
-        }else{
+        if (result) {
+            res.status(200).json({"result": "ok"});
+        } else {
             res.status(500).send("Something went wrong");
         }
     } catch (error) {
@@ -451,7 +451,7 @@ app.get('/userFeed', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-app.get('/user/:username', async (req, res) => { 
+app.get('/user/:username', async (req, res) => {
     const username = req.params.username;
     const userId = req.userId;
     try {
@@ -495,4 +495,34 @@ app.delete('/deleteNote/:title', async (req, res) => {
     } catch (error) {
         res.status(500).send("a Internal server error");
     }
-})
+});
+
+app.post("/deleteCategory/:title", async (req, res) => {
+    const username = req.userId;
+    const categories = req.body.categories;
+    const title = req.params.title;
+
+    try {
+        const result = await databaseFunction.removeCategoriesFromNote(title, username, categories);
+        if (result) {
+            res.status(200).json({message: "Categories removed successfully", result: true});
+        } else {
+            res.status(500).json({message: "An error occurred while removing categories"});
+        }
+    } catch (error) {
+        res.status(500).json({message: "An error occurred while removing categories", error: error});
+    }
+});
+
+app.post("/addCategory/:title", async (req, res) => {
+    const username = req.userId;
+    const categories = req.body.categories;
+    const title = req.params.title;
+
+    try {
+        await databaseFunction.addCategoriesToNote(title, username, categories);
+        res.status(200).json({message: "Categories added successfully", result: true});
+    } catch (error) {
+        res.status(500).json({message: "An error occurred while adding categories", error: error});
+    }
+});

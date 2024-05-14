@@ -182,7 +182,8 @@ export const databaseFunction = {
     modifyComponentContent: async (idNote, pos, newContent) => {
         const sql = `UPDATE componente
                      SET contenuto = ?
-                     WHERE posizione = ? AND idAppunto = ?`;
+                     WHERE posizione = ?
+                       AND idAppunto = ?`;
         try {
             return db.promise().query(sql, [newContent, pos, idNote]);
         } catch (error) {
@@ -254,7 +255,9 @@ export const databaseFunction = {
     },
 
     getNumComponents: async (id) => {
-        const sql = `SELECT COUNT(*) FROM componente WHERE idAppunto = ?`;
+        const sql = `SELECT COUNT(*)
+                     FROM componente
+                     WHERE idAppunto = ?`;
         try {
             const result = await db.promise().query(sql, [id]);
             return result;
@@ -483,6 +486,47 @@ export const databaseFunction = {
 
         // Creiamo un array con i nomi delle categorie
         return categoriesNamesResult.map(row => row.nome);
+    },
+    removeCategoriesFromNote: async (noteTitle, author, categories) => {
+        // Get the note's ID
+        const getNoteIdSql = 'SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)';
+        const [noteIdResults] = await db.promise().query(getNoteIdSql, [noteTitle, author]);
+        const noteId = noteIdResults[0].id;
+
+        // Get the IDs of the categories
+        const getCategoryIdsSql = 'SELECT id FROM categoria WHERE nome IN (?)';
+        const [categoryIdsResults] = await db.promise().query(getCategoryIdsSql, [categories]);
+        const categoryIds = categoryIdsResults.map(row => row.id);
+
+        // Delete the rows in the `categoriaAppunto` table
+        const deleteSql = 'DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)';
+        const [deleteResults] = await db.promise().query(deleteSql, [noteId, categoryIds]);
+        return deleteResults;
+    },
+    addCategoriesToNote: async (noteTitle, author, categories) => {
+        // Normalize categories and remove duplicates
+        categories = [...new Set(categories.map(category => category.trim().replace(/\s\s+/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())))];
+
+        // Get the note's ID
+        const getNoteIdSql = 'SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)';
+        const [noteIdResults] = await db.promise().query(getNoteIdSql, [noteTitle, author]);
+        const noteId = noteIdResults[0].id;
+
+        // Process each category
+        await Promise.all(categories.map(async (category) => {
+            // Ensure the category exists
+            const createCategorySql = 'INSERT IGNORE INTO categoria (nome) VALUES (?)';
+            await db.promise().query(createCategorySql, [category]);
+
+            // Get the category ID
+            const getCategoryIdSql = 'SELECT id FROM categoria WHERE nome = ?';
+            const [categoryIdResults] = await db.promise().query(getCategoryIdSql, [category]);
+            const categoryId = categoryIdResults[0].id;
+
+            // Associate the category with the note
+            const associateSql = 'INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)';
+            await db.promise().query(associateSql, [noteId, categoryId]);
+        }));
     },
     changeNoteTitle: async (oldTitle, newTitle) => {
         const sql = `UPDATE appunto SET nome = ? WHERE nome = ?`;
