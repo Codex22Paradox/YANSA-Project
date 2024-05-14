@@ -338,6 +338,24 @@ app.post('/categoryFeed', async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
+
+app.post('/insertRating/:note', async (req, res) => {
+    const noteTitle = req.params.note;
+    const userName = req.userId;
+    const rating = req.body.rating;
+    try {
+        const resultNote = await databaseFunction.getNoteData(noteTitle);
+        const result = await databaseFunction.insertRating(userName, resultNote.id, rating);
+        if(result){
+            res.status(200).json({ "result": "ok" });
+        }else{
+            res.status(500).send("Something went wrong");
+        }
+    } catch (error) {
+        res.status(500).send("Something went wrong");
+    }
+})
+
 //Metodi get
 app.get('/notesAccount/:username/:username2', async (req, res) => {
     const username = req.params.username;
