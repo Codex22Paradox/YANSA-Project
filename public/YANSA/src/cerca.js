@@ -12,6 +12,12 @@ const loader = document.getElementById('loader');
 document.getElementById('homeButton').onclick = () => {
     window.location.href = './home.html';
 };
+
+document.getElementById('accountButton').onclick = () => {
+    window.location.href = './account.html';
+};
+
+
 document.getElementById("newNote").onclick = () => {
     sessionStorage.setItem("editorType", "new");
     window.location.href = "./editor.html"

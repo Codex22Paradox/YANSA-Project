@@ -67,11 +67,6 @@ select {
     color: #fff;
 }
 
-.form-label-group.outline select option {
-    background-color: #212529; /* $gray-100 in Bootstrap */
-    color: #e8f7ff; /* $gray-900 in Bootstrap */
-}
-
 .input-space {
     margin-right: 0.625rem !important;
 }
@@ -1379,4 +1374,11 @@ line {
 .rating label:hover ~ label {
     color: #6f00ff;
     transition: color 0.3s;
+}
+
+.form-control {
+    color: white;
+}
+.form-control:focus {
+    color: white;
 }
