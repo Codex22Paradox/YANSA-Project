@@ -23,20 +23,24 @@ document.getElementById("newNote").onclick = () => {
     window.location.href = "./editor.html"
 }
 
-cerca.addEventListener('keydown', async (event) => {
-    if (event.key === 'Enter') {
+cerca.addEventListener('input', async (event) => {
+    if (event.target.value.length === 0) {
+        div.classList.add('d-none');
+        loader.classList.remove('d-none');
+    } else {
         if (ricercaCorrente) {
             ricercaCorrente.cancel = true;
         }
         ricercaCorrente = {cancel: false};
         const array = await search(event.target.value, ricercaCorrente);
         if (ricercaCorrente.cancel) return;
-        console.log(array);
         const finalArray = await createArray(array);
         loader.classList.add('d-none');
         div.classList.remove('d-none');
-        console.log(div.classList);
         await render(div, finalArray);
+        if (array.length === 0) {
+            div.innerHTML = '<h1 class="text-center text-white">Nessun appunto trovato</h1>';
+        }
     }
 });
 

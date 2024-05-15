@@ -536,7 +536,7 @@ export const databaseFunction = {
             console.log(error)
             return null;
         }
-    }, searchUsers: async (searchString) => {
+    }, searchUsers: async (searchString, currentUsername) => {
         const sql = `
             SELECT u.id,
                    u.username,
@@ -544,10 +544,11 @@ export const databaseFunction = {
                    (SELECT COUNT(*) FROM utenteFollow WHERE idUtenteSegue = u.id)   AS followingCount,
                    u.img                                                            AS profilePicture
             FROM utente u
-            WHERE MATCH(u.username) AGAINST(? IN BOOLEAN MODE);
+            WHERE MATCH(u.username) AGAINST(? IN BOOLEAN MODE)
+              AND u.username != ?
         `;
         try {
-            const [results] = await db.promise().query(sql, [searchString + '*']);
+            const [results] = await db.promise().query(sql, [searchString + '*', currentUsername]);
             return results;
         } catch (error) {
             console.error('Search error:', error);
@@ -567,5 +568,34 @@ export const databaseFunction = {
             console.error('Search error:', error);
             return [];
         }
+    },
+    isCategoryFollowedByUser: async (username, category) => {
+        const sql = `
+            SELECT COUNT(*) as count
+            FROM categoriaFollow
+            WHERE idUtente = (SELECT id FROM utente WHERE username = ?)
+              AND idCategoria = (SELECT id FROM categoria WHERE nome = ?)
+        `;
+        const [results] = await db.promise().query(sql, [username, category]);
+        return results[0].count > 0;
+    },
+    isUserFollowedByUser: async (followerUsername, followedUsername) => {
+        const sql = `
+            SELECT COUNT(*) as count
+            FROM utenteFollow
+            WHERE idUtenteSegue = (SELECT id FROM utente WHERE username = ?)
+              AND idUtenteSeguito = (SELECT id FROM utente WHERE username = ?)
+        `;
+        const [results] = await db.promise().query(sql, [followerUsername, followedUsername]);
+        return results[0].count > 0;
+    },
+    getCategoryFollowersCount: async (categoryName) => {
+        const sql = `
+            SELECT COUNT(*) as count
+            FROM categoriaFollow
+            WHERE idCategoria = (SELECT id FROM categoria WHERE nome = ?)
+        `;
+        const [results] = await db.promise().query(sql, [categoryName]);
+        return results[0].count;
     }
 };

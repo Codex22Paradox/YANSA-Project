@@ -791,9 +791,15 @@ a.article:hover {
 }
 
 .card {
-    width: 400px;
+    width: 25rem;
     background-color: #157145;
-    border-radius: 10px;
+    border-radius: 0.625rem;
+}
+
+.cardAccount {
+    width: 29.25rem;
+    background-color: #157145;
+    border-radius: 0.625rem;
 }
 
 .tools {
