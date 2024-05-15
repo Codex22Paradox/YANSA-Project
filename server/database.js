@@ -538,9 +538,13 @@ export const databaseFunction = {
         }
     }, searchUsers: async (searchString) => {
         const sql = `
-            SELECT username
-            FROM utente
-            WHERE MATCH(username) AGAINST(? IN BOOLEAN MODE)
+            SELECT u.id,
+                   u.username,
+                   (SELECT COUNT(*) FROM utenteFollow WHERE idUtenteSeguito = u.id) AS followersCount,
+                   (SELECT COUNT(*) FROM utenteFollow WHERE idUtenteSegue = u.id)   AS followingCount,
+                   u.img                                                            AS profilePicture
+            FROM utente u
+            WHERE MATCH(u.username) AGAINST(? IN BOOLEAN MODE);
         `;
         try {
             const [results] = await db.promise().query(sql, [searchString + '*']);

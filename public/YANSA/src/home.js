@@ -150,6 +150,10 @@ document.getElementById("newNote").onclick = () => {
     window.location.href = "./editor.html"
 }
 
+document.getElementById('accountButton').onclick = () => {
+    window.location.href = './account.html';
+};
+
 let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl, {

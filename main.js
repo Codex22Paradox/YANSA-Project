@@ -357,9 +357,9 @@ app.post('/insertRating/:note', async (req, res) => {
 })
 
 //Metodi get
-app.get('/notesAccount/:username/:username2', async (req, res) => {
-    const username = req.params.username;
-    const username2 = req.params.username2;
+app.get('/notesAccount/:username/', async (req, res) => {
+    const username = req.userId;
+    const username2 = req.params.username;
     try {
         if (username !== username2) {
             const appunti = await databaseFunction.getPublicNotesByUser(username);

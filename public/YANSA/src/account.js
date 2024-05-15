@@ -43,9 +43,27 @@ const template = `<div class="col-auto mt-3">
                 <div class="tools justify-content-end"></div>
                 <div class="card__content">
                     <div class="container">
-                        <div class="row justify-content-between">
-                            <div class="col-auto">
-                                <h2 class="text-white">%AUTORE</h2>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="d-flex align-items-center">
+                                    <div class="col-3">
+                                        <img src="./images/Logo.png" class="card-img-top rounded-circle w-100" alt="Profilo">
+                                    </div>
+                                    <div class="col text-start">
+                                        <h2 class="text-white">%AUTORE</h2>
+                                    </div>
+                                    <div class="col-3">
+                                       <div class="row">
+                                            <p>%SEGUITI</p>
+                                        </div>
+                                        <div class="row">
+                                            <p>%SEGUITI</p>
+                                        </div>
+                                    </div>
+                                   <div class="col-3 d-flex align-items-center">
+                                       <button class="btn btn-primary">Segui</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -59,7 +77,8 @@ const render = async (div, array) => {
     div.innerHTML = '';
     let html = '';
     array.forEach((element) => {
-        html += template;
+        console.log(element);
+        html += template.replace('%ID', element.username).replace('%AUTORE', element.username)
     });
     div.innerHTML = html;
 }
