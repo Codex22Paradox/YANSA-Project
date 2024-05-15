@@ -546,3 +546,14 @@ app.get('/searchCategories/:searchString', async (req, res) => {
         res.status(500).json({error: error.toString()});
     }
 });
+
+app.get('/followedCategories/', async (req, res) => {
+    const username = req.userId;
+    try {
+        const categories = await databaseFunction.getFollowedCategories(username);
+        res.status(200).json(categories);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});

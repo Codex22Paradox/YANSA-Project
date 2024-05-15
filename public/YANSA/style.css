@@ -1384,3 +1384,28 @@ line {
     color: white;
 }
 
+.btn-account {
+    background: rgba(6, 103, 57, 0.82);
+    border: none;
+    padding: 15px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.btn-account:hover {
+    background: rgb(3, 86, 46);
+    transition: 0.5s;
+}
+
+.btn-account span {
+    color: #fff;
+}
+
+.account {
+    background: rgba(6, 103, 57, 0.82) !important;
+    cursor: pointer;
+}
+
+.account-title {
+    cursor: pointer;
+}
