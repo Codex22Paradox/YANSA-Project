@@ -3,6 +3,8 @@ const username = sessionStorage.getItem("username");
 const saveButton = document.getElementById("save");
 const titleInput = document.getElementById("titolo");
 let title = document.getElementById("titolo_eff");
+const btnRating = document.getElementById("ratingInvia");
+const ratings = [];
 //Inizializza Editor.js
 const editor = new EditorJS({
     /**
@@ -325,4 +327,8 @@ document.getElementById("searchButton").onclick = () => {
 
 titleInput.onblur = () => {
     document.getElementById("titolo_eff").innerText = titleInput.value;
+}
+
+if(sessionStorage.getItem("token") === null || sessionStorage.getItem("noteName") === null){
+    window.location.href = "./accedi.html";
 }

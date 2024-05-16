@@ -473,6 +473,11 @@ app.get('/user/:username', async (req, res) => {
         res.status(500).send('a Internal Server Error');
     }
 });
+app.get('/userRating/:note', async (req, res) => {
+    const username = req.userId;
+    //:note è composto dal nome - autore
+    
+})
 
 //Metodi delete
 app.delete('/deleteNote/:title', async (req, res) => {

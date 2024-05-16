@@ -85,7 +85,9 @@ export const databaseFunction = {
             console.error('Search error:', error); // Log the error
         }
         return results;
-    }, login: async (username, password) => {
+    },
+
+    login: async (username, password) => {
         const sql = 'SELECT * FROM utente WHERE username = ? AND password = ?';
         const [results] = await db.promise().query(sql, [username, password]);
         return results.length > 0;
@@ -426,7 +428,9 @@ export const databaseFunction = {
             console.log(error);
             return null;
         }
-    }, getFeed: async (username) => {
+    }, 
+
+    getFeed: async (username) => {
         const sql = `
             SELECT appunto.id, appunto.nome, appunto.visibilita, appunto.autore, AVG(valutazione.valore) as rating
             FROM appunto
@@ -446,7 +450,9 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    }, getFeedByCategories: async (username, categories) => {
+    }, 
+
+    getFeedByCategories: async (username, categories) => {
         const categoriesString = categories.map(category => `'${category}'`).join(',');
 
         const sql = `
@@ -468,7 +474,9 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    }, getFollowedCategories: async (username) => {
+    }, 
+
+    getFollowedCategories: async (username) => {
         // Prima query: otteniamo l'ID dell'utente
         const getUserIdSql = 'SELECT id FROM utente WHERE username = ?';
         const [userIdResult] = await db.promise().query(getUserIdSql, [username]);
@@ -485,7 +493,9 @@ export const databaseFunction = {
 
         // Creiamo un array con i nomi delle categorie
         return categoriesNamesResult.map(row => row.nome);
-    }, removeCategoriesFromNote: async (noteTitle, author, categories) => {
+    }, 
+
+    removeCategoriesFromNote: async (noteTitle, author, categories) => {
         // Get the note's ID
         const getNoteIdSql = 'SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)';
         const [noteIdResults] = await db.promise().query(getNoteIdSql, [noteTitle, author]);
@@ -500,7 +510,9 @@ export const databaseFunction = {
         const deleteSql = 'DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)';
         const [deleteResults] = await db.promise().query(deleteSql, [noteId, categoryIds]);
         return deleteResults;
-    }, addCategoriesToNote: async (noteTitle, author, categories) => {
+    }, 
+
+    addCategoriesToNote: async (noteTitle, author, categories) => {
         // Normalize categories and remove duplicates
         categories = [...new Set(categories.map(category => category.trim().replace(/\s\s+/g, ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase())))];
 
@@ -524,7 +536,9 @@ export const databaseFunction = {
             const associateSql = 'INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)';
             await db.promise().query(associateSql, [noteId, categoryId]);
         }));
-    }, changeNoteTitle: async (oldTitle, newTitle) => {
+    }, 
+
+    changeNoteTitle: async (oldTitle, newTitle) => {
         const sql = `UPDATE appunto
                      SET nome = ?
                      WHERE nome = ?`;
@@ -536,7 +550,9 @@ export const databaseFunction = {
             console.log(error)
             return null;
         }
-    }, searchUsers: async (searchString, currentUsername) => {
+    }, 
+
+    searchUsers: async (searchString, currentUsername) => {
         const sql = `
             SELECT u.id,
                    u.username,
@@ -555,6 +571,7 @@ export const databaseFunction = {
             return [];
         }
     },
+
     searchCategories: async (searchString) => {
         const sql = `
             SELECT nome
@@ -569,6 +586,7 @@ export const databaseFunction = {
             return [];
         }
     },
+
     isCategoryFollowedByUser: async (username, category) => {
         const sql = `
             SELECT COUNT(*) as count
@@ -579,6 +597,7 @@ export const databaseFunction = {
         const [results] = await db.promise().query(sql, [username, category]);
         return results[0].count > 0;
     },
+
     isUserFollowedByUser: async (followerUsername, followedUsername) => {
         const sql = `
             SELECT COUNT(*) as count
@@ -589,6 +608,7 @@ export const databaseFunction = {
         const [results] = await db.promise().query(sql, [followerUsername, followedUsername]);
         return results[0].count > 0;
     },
+
     getCategoryFollowersCount: async (categoryName) => {
         const sql = `
             SELECT COUNT(*) as count
@@ -597,5 +617,19 @@ export const databaseFunction = {
         `;
         const [results] = await db.promise().query(sql, [categoryName]);
         return results[0].count;
+    },
+
+    getNoteRatingByUser: async (username, note, author) => {
+        const sql = `SELECT v.valore FROM valutazione AS v 
+        JOIN appunto AS a ON a.id = v.idAppunto
+        JOIN utente AS ua ON ua.id = a.autore
+        JOIN utente AS uv ON uv.id = v.idUtente
+        WHERE a.nome = ? AND ua.username = ? AND uv.username = ?`;
+        try {
+            const result = db.promise().query(sql, [note, author, username]);
+            return result;
+        } catch (error) {
+            return [];
+        }
     }
 };
