@@ -216,8 +216,6 @@ app.post('/register', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-
-
 app.get('/followUser/:username', async (req, res) => {
     const followerUsername = req.userId;
     const followedUsername = req.params.username;
@@ -338,7 +336,6 @@ app.post('/categoryFeed', async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 });
-
 app.post('/insertRating/:note', async (req, res) => {
     const noteTitle = req.params.note;
     const userName = req.userId;
@@ -355,7 +352,6 @@ app.post('/insertRating/:note', async (req, res) => {
         res.status(500).send("Something went wrong");
     }
 })
-
 //Metodi get
 app.get('/notesAccount/:username/', async (req, res) => {
     const username = req.userId;
