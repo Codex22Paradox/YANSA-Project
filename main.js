@@ -478,7 +478,7 @@ app.get('/userRating/:note', async (req, res) => {
     const author = req.params.note.split('-')[1];
     try {
         const results = await databaseFunction.getNoteRatingByUser(username, note, author);
-        res.status(200).json({ "result": results });
+        res.status(200).json({ "result": results[0][0] });
     } catch (error) {
         res.status(500).send('Something went wrong');
     }

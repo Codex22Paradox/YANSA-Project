@@ -6,6 +6,9 @@ let title = document.getElementById("titolo_eff");
 const btnRating = document.getElementById("ratingInvia");
 const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
+for (let i = 1; i < 6; i++) {
+    ratings.push(document.getElementById("star"+i));
+}
 //Inizializza Editor.js
 const editor = new EditorJS({
     /**
@@ -205,6 +208,20 @@ editor.isReady
                     titleInput.value = noteTitle;
                     document.getElementById("titolo_eff").innerText = noteTitle;
                     editor.render(res.data);
+                    fetch("/userRating/"+noteTitle+"-"+sessionStorage.getItem("noteAuthor"), {
+                        method: "GET",
+                        headers: {
+                            "content-type": "application/json",
+                            "Authorization": sessionStorage.getItem("token")
+                        }
+                    }).then((res) => res.json())
+                    .then((res) => {
+                        if(res.result){
+                            ratings.forEach((element) => element.setAttribute("disabled", ""))
+                            document.getElementById("star"+res.result.valore).checked = true;
+                            btnRating.setAttribute("disabled", "");
+                        }
+                    })
                 });
         }
     })
@@ -331,6 +348,30 @@ document.getElementById("searchButton").onclick = () => {
 
 titleInput.onblur = () => {
     document.getElementById("titolo_eff").innerText = titleInput.value;
+}
+
+btnRating.onclick = () => {
+    let checked;
+    for (let i = 0; i < ratings.length; i++) {
+        if(ratings[i].checked){
+            checked = i+1;
+        }
+    }
+    fetch('/insertRating/'+sessionStorage.getItem("noteName"), {
+        method: "POST",
+        headers: {
+            "content-type": "application/json",
+            "Authorization": sessionStorage.getItem("token")
+        },
+        body: JSON.stringify({
+            rating: checked
+        })
+    }).then((res) => res.json())
+    .then((res) => {
+        if (res.result == "ok") {
+            btnRating.setAttribute("disabled", "")
+        }
+    })
 }
 
 if (sessionStorage.getItem("token") === null || (sessionStorage.getItem("noteName") === null && sessionStorage.getItem("editorType") !== "new")) {
