@@ -283,9 +283,10 @@ app.post('/saveNote/modify', async (req, res) => {
     const deleted = req.body.deleted;
     const title = req.body.title;
     const newTitle = req.body.newTitle;
-    console.log("title")
-    console.log(title);
+    const notePublic = req.body.public;
     try {
+        const userId = await databaseFunction.getUserId(req.userId);
+        await databaseFunction.changeNoteVisibility(userId, title, notePublic);
         let noteId = await databaseFunction.getNoteData(title);
         noteId = noteId.id;
         modified.forEach(async (element) => {
@@ -473,7 +474,14 @@ app.get('/user/:username', async (req, res) => {
 app.get('/userRating/:note', async (req, res) => {
     const username = req.userId;
     //:note è composto dal nome - autore
-
+    const note = req.params.note.split('-')[0];
+    const author = req.params.note.split('-')[1];
+    try {
+        const results = await databaseFunction.getNoteRatingByUser(username, note, author);
+        res.status(200).json({ "result": results });
+    } catch (error) {
+        res.status(500).send('Something went wrong');
+    }
 })
 
 //Metodi delete

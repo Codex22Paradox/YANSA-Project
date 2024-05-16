@@ -4,6 +4,7 @@ const saveButton = document.getElementById("save");
 const titleInput = document.getElementById("titolo");
 let title = document.getElementById("titolo_eff");
 const btnRating = document.getElementById("ratingInvia");
+const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
 //Inizializza Editor.js
 const editor = new EditorJS({
@@ -167,6 +168,10 @@ editor.isReady
                     return JSON.parse(res.Result);
                 })
                 .then(res => {
+                    publicSwitch.removeAttribute("disabled");
+                    if(res.visible){
+                        publicSwitch.setAttribute("checked", "");
+                    }
                     noteTitle = res.title;
                     console.log(res);
                     titleInput.value = noteTitle;
@@ -269,8 +274,6 @@ saveButton.onclick = () => {
                     modified.push({pos: i, data: changed});
                 }
             });
-            console.log("titleeff")
-            console.log(document.getElementById("titolo_eff"));
             if (title !== document.getElementById("titolo_eff").innerText) {
                 fetch("/saveNote/modify", {
                     method: "POST",
@@ -283,7 +286,8 @@ saveButton.onclick = () => {
                         deleted: deleted,
                         modified: modified,
                         title: title,
-                        newTitle: document.getElementById("titolo_eff").innerText
+                        newTitle: document.getElementById("titolo_eff").innerText,
+                        public: publicSwitch.checked
                     })
                 })
                     .then(res => res.json())
@@ -303,7 +307,8 @@ saveButton.onclick = () => {
                         deleted: deleted,
                         modified: modified,
                         title: title,
-                        newTitle: ""
+                        newTitle: "",
+                        public: publicSwitch.checked
                     })
                 })
                     .then(res => res.json())
@@ -328,6 +333,6 @@ titleInput.onblur = () => {
     document.getElementById("titolo_eff").innerText = titleInput.value;
 }
 
-if (sessionStorage.getItem("token") === null) {
-    window.location.href = "./accedi.html";
+if (sessionStorage.getItem("token") === null || (sessionStorage.getItem("noteName") === null && sessionStorage.getItem("editorType") !== "new")) {
+    window.location.href = "./home.html";
 }

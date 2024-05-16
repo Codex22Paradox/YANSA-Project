@@ -639,5 +639,15 @@ export const databaseFunction = {
         } catch (error) {
             return [];
         }
+    },
+
+    changeNoteVisibility: async (author, note, visibility) => {
+        const sql = `UPDATE appunto SET visibilita = ? WHERE autore = ? AND nome = ?`;
+        try{
+            const result = db.promise().query(sql, [visibility, author, note]);
+            return result;
+        } catch (error) {
+            return null;
+        }
     }
 };
