@@ -248,9 +248,9 @@ app.get('/unfollowUser/:username', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-app.post('/followCategory', async (req, res) => {
+app.get('/followCategory/:categoryName', async (req, res) => {
     const username = req.userId;
-    const categoryName = req.body.categoryName;
+    const categoryName = req.params.categoryName;
     try {
         const result = await databaseFunction.followCategory(username, categoryName);
         if (result) {
@@ -263,9 +263,9 @@ app.post('/followCategory', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
-app.post('/unfollowCategory', async (req, res) => {
+app.get('/unfollowCategory/:categoryName', async (req, res) => {
     const username = req.userId;
-    const categoryName = req.body.categoryName;
+    const categoryName = req.params.categoryName;
     try {
         const result = await databaseFunction.unfollowCategory(username, categoryName);
         if (result) {
@@ -564,14 +564,11 @@ app.get('/searchCategories/:searchString', async (req, res) => {
         res.status(500).json({message: 'Internal server error', error: error.toString()});
     }
 });
+
 app.get('/followedCategories/', async (req, res) => {
     const username = req.userId;
     try {
         let categories = await databaseFunction.getFollowedCategories(username);
-        for (let i = 0; i < categories.length; i++) {
-            const isFollowed = await databaseFunction.isCategoryFollowedByUser(username, categories[i]);
-            categories[i] = {...categories[i], isFollowed: isFollowed};
-        }
         res.status(200).json(categories);
     } catch (error) {
         console.error(error);

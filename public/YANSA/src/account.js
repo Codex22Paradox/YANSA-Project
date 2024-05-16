@@ -3,6 +3,7 @@ const buttonAccount = document.getElementById('buttonAccount');
 const cerca = document.getElementById('cerca');
 const div = document.getElementById('noteContainer');
 const loader = document.getElementById('loader');
+const modalDetails = new bootstrap.Modal('#modalDetails', {});
 let ricerca = 0 //0 account, 1 categorie
 let ricercaCorrente = null;
 buttonCategorie.onclick = () => {
@@ -11,6 +12,9 @@ buttonCategorie.onclick = () => {
     ricerca = 1;
     cerca.placeholder = 'Cerca categorie';
     cerca.value = '';
+    div.innerHTML = '';
+    div.classList.add('d-none');
+    loader.classList.remove('d-none');
 }
 
 buttonAccount.onclick = () => {
@@ -19,6 +23,9 @@ buttonAccount.onclick = () => {
     ricerca = 0;
     cerca.placeholder = 'Cerca account';
     cerca.value = '';
+    div.innerHTML = '';
+    div.classList.add('d-none');
+    loader.classList.remove('d-none');
 }
 
 document.getElementById('homeButton').onclick = () => {
@@ -37,6 +44,7 @@ document.getElementById("newNote").onclick = () => {
 
 cerca.addEventListener('input', async (event) => {
     if (event.target.value.length === 0) {
+        div.innerHTML = '';
         div.classList.add('d-none');
         loader.classList.remove('d-none');
     } else {
@@ -52,7 +60,11 @@ cerca.addEventListener('input', async (event) => {
         }
         console.log(array);
         if (ricercaCorrente.cancel) return;
-        await renderAccount(div, array);
+        if (ricerca === 0) {
+            await renderAccount(div, array);
+        } else {
+            await renderCategory(div, array);
+        }
         if (array.length === 0) {
             div.innerHTML = '<h1 class="text-center text-white">Nessun utente trovato</h1>';
         }
@@ -85,7 +97,7 @@ const searchCategory = async (testo, cancelToken) => {
 }
 const templateAccount = `
 <div class="col-auto mt-3">
-    <div class="cardAccount" id="%ID">
+    <div class="cardAccount">
         <div class="tools justify-content-end"></div>
         <div class="card__content">
             <div class="container">
@@ -96,11 +108,11 @@ const templateAccount = `
                                 <img src="./images/Logo.png" class="card-img-top rounded-circle w-100" alt="Profilo">
                             </div>
                             <div class="col-md-5 text-start">
-                                <h2 class="text-white text-truncate account-title" title="%TITLE">%AUTORE</h2>
+                                <h2 class="text-white text-truncate account-title" title="%TITLE" id="%ID">%AUTORE</h2>
                             </div>
                             <div class="col-md-2 ms-2"> 
                                 <div class="row">
-                                    <p class="text-light account bg-success rounded-3 p-2 account">Follower: %FOLLOWER</p>
+                                    <p class="text-light account bg-success rounded-3 p-2 account">Seguaci: %FOLLOWER</p>
                                 </div>
                                 <div class="row">
                                     <p class="text-light account bg-success rounded-3 p-2 account">Seguiti: %SEGUITI</p>
@@ -127,23 +139,17 @@ const templateCategory = `
         <div class="card__content">
             <div class="container">
                 <div class="row">
-                    <div class="col-auto">
-                        <div class="d-flex align-items-center">
-                            <div class="col-md-5 text-start">
-                                <h2 class="text-white text-truncate account-title" title="%TITLE">%NOME</h2>
-                            </div>
-                            <div class="col-md-2 ms-2"> 
-                                <div class="row">
-                                    <p class="text-light account bg-success rounded-3 p-2 account">Follower: %FOLLOWER</p>
-                                </div>
-                            </div>
-                            <div class="col-auto d-flex align-items-center">
-                            <div class="row ms-3">
-                                <button class="btn-account rounded-4" type="button" id="button_%ID_%STATUS"> 
-    <span class="material-symbols-rounded align-middle">%PERSON</span>
-</button>
-                                </div>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                        <div class="col-md-4 text-start mb-2">
+                            <h2 class="text-white text-truncate account-title" title="%TITLE">%NOME</h2>
+                        </div>
+                        <div class="col-md-auto text-center">
+                            <p class="text-light account bg-success rounded-3 p-2 account">Follower: %FOLLOWER</p>
+                        </div>
+                        <div class="col-md-auto text-end mb-3">
+                            <button class="btn-account rounded-4" type="button" id="button_%ID_%STATUS"> 
+                                <span class="material-symbols-rounded align-middle">%PERSON</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -183,6 +189,15 @@ const renderAccount = async (div, array) => {
             }
         }
     });
+
+    const buttonAccount = document.querySelectorAll('.cardAccount');
+    buttonAccount.forEach((button) => {
+        button.onclick = async () => {
+            const id = button.id;
+            const token = sessionStorage.getItem('token');
+                modalDetails.show();
+        }
+    });
 }
 const renderCategory = async (div, array) => {
     div.innerHTML = '';
@@ -204,15 +219,15 @@ const renderCategory = async (div, array) => {
             const id = button.id.split('_')[1];
             const status = button.id.split('_')[2];
             const token = sessionStorage.getItem('token');
-            const url = status === 'add' ? '/followUser' : '/unfollowUser';
+            const url = status === 'add' ? '/followCategory' : '/unfollowCategory';
             const response = await fetch(url + "/" + id, {
                 method: 'GET', headers: {
                     Authorization: token
                 }
             });
             if (response.ok) {
-                const array = await searchAccount(cerca.value, ricercaCorrente);
-                await render(div, array);
+                const array = await searchCategory(cerca.value, ricercaCorrente);
+                await renderCategory(div, array);
             }
         }
     });

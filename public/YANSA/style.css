@@ -76,6 +76,16 @@ select {
     border: none; /* This will remove the border */
 }
 
+.btn-dark:hover {
+    background-color: transparent;
+    border: none; /* This will remove the border */
+}
+
+.btn-dark:active {
+    background-color: transparent;
+    border: none; /* This will remove the border */
+}
+
 .container-fluid-accedi {
     margin-left: 0;
 }
@@ -1077,6 +1087,25 @@ a.article:hover {
     border: 2px solid #000000; /* Sostituisci #desiredColor con il colore del bordo desiderato */
     border-radius: 10px; /* Aggiungi questa linea per smussare gli angoli. Puoi modificare il valore per ottenere la smussatura desiderata */
 
+}
+
+.modal-content {
+    background-color: #101415 !important; /* Colore di sfondo dei modali */
+}
+
+/* Sovrascrive il colore di sfondo del header del modal */
+.modal-header {
+    background-color: #101415 !important; /* Colore di sfondo dell'header del modal */
+}
+
+/* Sovrascrive il colore di sfondo del body del modal */
+.modal-body {
+    background-color: #101415 !important; /* Colore di sfondo del body del modal */
+}
+
+/* Sovrascrive il colore di sfondo del footer del modal */
+.modal-footer {
+    background-color: #101415 !important; /* Colore di sfondo del footer del modal */
 }
 
 .cdx-simple-image__picture--with-background {
