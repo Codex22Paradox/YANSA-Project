@@ -76,6 +76,8 @@ export const databaseFunction = {
         `;
         try {
             console.log('Search string:', searchString); // Log the search string
+            console.log('With parameters:', [searchString, searchString, types, '*' + searchString + '*']);
+
             const [queryResults] = await db.promise().query(sql, [searchString, searchString, types, '*' + searchString + '*']);
             // Convert the count to an integer
             results = queryResults.map(result => ({...result, count: parseInt(result.count)}));
@@ -479,6 +481,11 @@ export const databaseFunction = {
         const [followedCategoriesIdResult] = await db.promise().query(getFollowedCategoriesIdSql, [userId]);
         const followedCategoriesIds = followedCategoriesIdResult.map(row => row.idCategoria);
 
+        // Se non ci sono categorie seguite, restituiamo un array vuoto
+        if (followedCategoriesIds.length === 0) {
+            return [];
+        }
+
         // Terza query: otteniamo i nomi delle categorie corrispondenti agli ID
         const getCategoriesNamesSql = 'SELECT nome FROM categoria WHERE id IN (?)';
         const [categoriesNamesResult] = await db.promise().query(getCategoriesNamesSql, [followedCategoriesIds]);
@@ -557,7 +564,7 @@ export const databaseFunction = {
     },
     searchCategories: async (searchString) => {
         const sql = `
-            SELECT nome
+            SELECT id, nome
             FROM categoria
             WHERE MATCH(nome) AGAINST(? IN BOOLEAN MODE)
         `;

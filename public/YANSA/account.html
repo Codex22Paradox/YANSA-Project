@@ -41,6 +41,7 @@
     <link rel="stylesheet" href="./style.css"/>
 </head>
 <body>
+<button data-bs-toggle="modal" data-bs-target="#modalDetails" type="button" class="btn btn-primary">Apri</button>
 <div
         class="navigation-card position-fixed top-50 start-0 translate-middle-y d-flex flex-column align-items-center justify-content-center"
 >
@@ -160,6 +161,27 @@
                             x1="61.7089"
                     ></line>
                 </svg>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalDetails" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1>Modal title</h1>
+                <button type="button" class="btn btn-dark btn-lg align-middle ms-auto" id="closeModalNuovaChat"
+                        data-bs-dismiss="modal"
+                ><span class="material-symbols-rounded align-middle">
+close
+</span></button>
+            </div>
+            <div class="modal-body border-0">
+                ...
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
             </div>
         </div>
     </div>
