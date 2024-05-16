@@ -4,6 +4,7 @@ const cerca = document.getElementById('cerca');
 const div = document.getElementById('noteContainer');
 const loader = document.getElementById('loader');
 const modalDetails = new bootstrap.Modal('#modalDetails', {});
+const modalTitle = document.getElementById('modalTitle');
 let ricerca = 0 //0 account, 1 categorie
 let ricercaCorrente = null;
 buttonCategorie.onclick = () => {
@@ -16,7 +17,6 @@ buttonCategorie.onclick = () => {
     div.classList.add('d-none');
     loader.classList.remove('d-none');
 }
-
 buttonAccount.onclick = () => {
     buttonAccount.classList.add('active');
     buttonCategorie.classList.remove('active');
@@ -27,21 +27,16 @@ buttonAccount.onclick = () => {
     div.classList.add('d-none');
     loader.classList.remove('d-none');
 }
-
 document.getElementById('homeButton').onclick = () => {
     window.location.href = './home.html';
 };
-
 document.getElementById('searchButton').onclick = () => {
     window.location.href = './ricerca.html';
 };
-
-
 document.getElementById("newNote").onclick = () => {
     sessionStorage.setItem("editorType", "new");
     window.location.href = "./editor.html"
 }
-
 cerca.addEventListener('input', async (event) => {
     if (event.target.value.length === 0) {
         div.innerHTML = '';
@@ -108,7 +103,7 @@ const templateAccount = `
                                 <img src="./images/Logo.png" class="card-img-top rounded-circle w-100" alt="Profilo">
                             </div>
                             <div class="col-md-5 text-start">
-                                <h2 class="text-white text-truncate account-title" title="%TITLE" id="%ID">%AUTORE</h2>
+                                <h2 class="text-white text-truncate account-title text-decoration-underline" title="%TITLE" id="%ID">%AUTORE</h2>
                             </div>
                             <div class="col-md-2 ms-2"> 
                                 <div class="row">
@@ -157,6 +152,33 @@ const templateCategory = `
         </div>
     </div>
 </div>`;
+const templateNotes = `        
+    <div class="col-auto mt-3">
+    <div class="card" id="cardNote_%ID">
+      <div class="tools justify-content-end"></div>
+      <div class="card__content">
+        <div class="container">
+          <div class="row justify-content-between">
+          <div class="col-auto">
+            <h2 class="text-white">%TITOLO</h2>
+            </div>
+            <div class="col-auto">
+            <p class="text-white">%DATA</p>
+            </div>
+            </div>
+              <div class="row justify-content-between">
+                  <div class="col-auto text-start">
+                  <p class="text-white text-decoration-underline">%AUTORE</p>
+                  </div>
+                  </div>
+              <p class="text-white %TRONCA">%CONTENUTO</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+const noteContainerModal = document.getElementById('noteContainerModal');
 const renderAccount = async (div, array) => {
     div.innerHTML = '';
     let html = '';
@@ -190,15 +212,20 @@ const renderAccount = async (div, array) => {
         }
     });
 
-    const buttonAccount = document.querySelectorAll('.cardAccount');
+    const buttonAccount = document.querySelectorAll('.account-title');
     buttonAccount.forEach((button) => {
         button.onclick = async () => {
             const id = button.id;
+            const username = button.title;
             const token = sessionStorage.getItem('token');
-                modalDetails.show();
+            const account = await getAccount(username);
+            const array = await createArray(account);
+            await render(noteContainerModal, array);
+            modalTitle.innerHTML = username;
+            modalDetails.show();
         }
     });
-}
+};
 const renderCategory = async (div, array) => {
     div.innerHTML = '';
     let html = '';
@@ -231,4 +258,95 @@ const renderCategory = async (div, array) => {
             }
         }
     });
-}
+};
+const getAccount = async (username) => {
+    const token = sessionStorage.getItem('token');
+    const response = await fetch('/notesAccount/' + username, {
+        headers: {
+            Authorization: token
+        }
+    });
+    return await response.json();
+};
+const pickComponent = async (url) => {
+    let rsp = await fetch(url, {
+        method: "GET", headers: {
+            "Content-Type": "application/json", Authorization: sessionStorage.getItem("token"),
+        },
+    });
+    rsp = await rsp.json();
+    rsp = JSON.parse(rsp.Result);
+    //console.log(rsp);
+    return rsp;
+};
+const createArray = async (array) => {
+    const result = [];
+    for (let index = 0; index < array.length; index++) {
+        console.log(array[index]);
+        let obj = {
+            titolo: array[index].nome, count: array[index].count, id: array[index].id,
+        };
+        let res = await pickComponent("/getNote/" + array[index].nome);
+        obj["data"] = res.dateCreation;
+        obj["autore"] = res.author;
+        let sum = "";
+        res.data.blocks.forEach((element) => {
+            if (element.type === "paragraph") {
+                sum += element.data.text;
+            }
+        });
+        obj["contenuto"] = sum;
+        result.push(obj);
+    }
+    return result;
+};
+const render = async (div, array) => {
+    div.innerHTML = "";
+    let output = "";
+    let controllino = 1;
+    array.forEach((appunto) => {
+        console.log(appunto);
+        let troncatura = "";
+        if (controllino === 1) {
+            troncatura = "truncate-md";
+        } else if (controllino === 2) {
+            troncatura = "truncate-xl";
+        } else if (controllino === 3) {
+            troncatura = "truncate-sm";
+        }
+        let html;
+        html = templateNotes.replace("%TITOLO", appunto.titolo);
+        html = html.replace("%AUTORE", appunto.autore);
+        html = html.replace("%DATA", dataIta(appunto.data.substring(0, 10)));
+        html = html.replace("%CONTENUTO", appunto.contenuto);
+        html = html.replace("%TRONCA", troncatura);
+        html = html.replace("%COUNT", "Ripetizioni: " + appunto.count);
+        html = html.replace("%ID", appunto.id);
+        output += html;
+        if (controllino === 1) {
+            controllino = 2;
+        } else if (controllino === 2) {
+            controllino = 3;
+        } else if (controllino === 3) {
+            controllino = 1;
+        }
+    });
+    div.innerHTML = output;
+    array.forEach((appunto) => {
+        console.log(appunto.id);
+        document.getElementById("cardNote_" + appunto.id).onclick = () => {
+            sessionStorage.setItem("noteName", appunto.titolo);
+            sessionStorage.setItem("noteAuthor", appunto.autore);
+            sessionStorage.setItem("editorType", "view");
+            window.location.href = "./editor.html";
+        };
+    });
+};
+
+const dataIta = (dataEstera) => {
+    let data = new Date(dataEstera);
+    let giorno = data.getDate();
+    let mese = data.getMonth() + 1;
+    let anno = data.getFullYear();
+    return giorno + "/" + mese + "/" + anno;
+};

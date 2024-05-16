@@ -362,7 +362,8 @@ app.get('/notesAccount/:username/', async (req, res) => {
     const username2 = req.params.username;
     try {
         if (username !== username2) {
-            const appunti = await databaseFunction.getPublicNotesByUser(username);
+            const id = await databaseFunction.getUserId(username2);
+            const appunti = await databaseFunction.getPublicNotesByUser(id);
             res.json(appunti);
         } else {
             const userId = await databaseFunction.getUserId(username);
@@ -476,7 +477,7 @@ app.get('/user/:username', async (req, res) => {
 app.get('/userRating/:note', async (req, res) => {
     const username = req.userId;
     //:note è composto dal nome - autore
-    
+
 })
 
 //Metodi delete

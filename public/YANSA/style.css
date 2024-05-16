@@ -1444,3 +1444,7 @@ line {
 .account-title {
     cursor: pointer;
 }
+
+#noteContainerModal {
+    height: auto !important;
+}

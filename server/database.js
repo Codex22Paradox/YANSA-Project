@@ -428,7 +428,7 @@ export const databaseFunction = {
             console.log(error);
             return null;
         }
-    }, 
+    },
 
     getFeed: async (username) => {
         const sql = `
@@ -450,7 +450,7 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    }, 
+    },
 
     getFeedByCategories: async (username, categories) => {
         const categoriesString = categories.map(category => `'${category}'`).join(',');
@@ -474,7 +474,7 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    }, 
+    },
 
     getFollowedCategories: async (username) => {
         // Prima query: otteniamo l'ID dell'utente
@@ -498,7 +498,7 @@ export const databaseFunction = {
 
         // Creiamo un array con i nomi delle categorie
         return categoriesNamesResult.map(row => row.nome);
-    }, 
+    },
 
     removeCategoriesFromNote: async (noteTitle, author, categories) => {
         // Get the note's ID
@@ -515,7 +515,7 @@ export const databaseFunction = {
         const deleteSql = 'DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)';
         const [deleteResults] = await db.promise().query(deleteSql, [noteId, categoryIds]);
         return deleteResults;
-    }, 
+    },
 
     addCategoriesToNote: async (noteTitle, author, categories) => {
         // Normalize categories and remove duplicates
@@ -541,7 +541,7 @@ export const databaseFunction = {
             const associateSql = 'INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)';
             await db.promise().query(associateSql, [noteId, categoryId]);
         }));
-    }, 
+    },
 
     changeNoteTitle: async (oldTitle, newTitle) => {
         const sql = `UPDATE appunto
@@ -555,7 +555,7 @@ export const databaseFunction = {
             console.log(error)
             return null;
         }
-    }, 
+    },
 
     searchUsers: async (searchString, currentUsername) => {
         const sql = `
@@ -625,11 +625,14 @@ export const databaseFunction = {
     },
 
     getNoteRatingByUser: async (username, note, author) => {
-        const sql = `SELECT v.valore FROM valutazione AS v 
-        JOIN appunto AS a ON a.id = v.idAppunto
-        JOIN utente AS ua ON ua.id = a.autore
-        JOIN utente AS uv ON uv.id = v.idUtente
-        WHERE a.nome = ? AND ua.username = ? AND uv.username = ?`;
+        const sql = `SELECT v.valore
+                     FROM valutazione AS v
+                              JOIN appunto AS a ON a.id = v.idAppunto
+                              JOIN utente AS ua ON ua.id = a.autore
+                              JOIN utente AS uv ON uv.id = v.idUtente
+                     WHERE a.nome = ?
+                       AND ua.username = ?
+                       AND uv.username = ?`;
         try {
             const result = db.promise().query(sql, [note, author, username]);
             return result;
