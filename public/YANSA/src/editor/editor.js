@@ -381,3 +381,7 @@ if (sessionStorage.getItem("token") === null || (sessionStorage.getItem("noteNam
 document.getElementById("setting").onclick = () => {
     window.location.href = "./setting.html";
 }
+
+document.getElementById("accountButton").onclick = () => {
+    window.location.href = "./account.html";
+};
