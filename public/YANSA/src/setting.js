@@ -149,7 +149,9 @@ document.getElementById("newNote").onclick = () => {
 document.getElementById('accountButton').onclick = () => {
     window.location.href = './account.html';
 };
-
+document.getElementById('homeButton').onclick = () => {
+    window.location.href = './home.html';
+}
 let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
 let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl, {

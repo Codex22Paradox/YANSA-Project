@@ -327,8 +327,12 @@ app.post('/saveNote/modify', async (req, res) => {
 app.post('/categoryFeed', async (req, res) => {
     let category = req.body.category;
     const username = req.userId;
-    if (category === null) {
-        category = databaseFunction.getFollowedCategories(username);
+    console.log("Categoria ");
+    console.log(category);
+    if (category.length === 0) {
+        console.log("empty")
+        category = await databaseFunction.getFollowedCategories(username);
+        console.log(category);
     }
     try {
         const result = await databaseFunction.getFeedByCategories(category);
@@ -478,7 +482,7 @@ app.get('/userRating/:note', async (req, res) => {
     const author = req.params.note.split('-')[1];
     try {
         const results = await databaseFunction.getNoteRatingByUser(username, note, author);
-        res.status(200).json({ "result": results[0][0] });
+        res.status(200).json({"result": results[0][0]});
     } catch (error) {
         res.status(500).send('Something went wrong');
     }
