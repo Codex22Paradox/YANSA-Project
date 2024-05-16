@@ -146,7 +146,6 @@ const editor = new EditorJS({
     autofocus: true,
     placeholder: "Inizia a scrivere.."
 });
-
 let snapshot;
 let noteTitle;
 
@@ -217,10 +216,10 @@ saveButton.onclick = () => {
                     "content-type": "application/json",
                     Authorization: sessionStorage.getItem("token")
                 },
-                body: JSON.stringify({ title: document.getElementById("titolo_eff").innerText, contents: data.blocks })
+                body: JSON.stringify({title: document.getElementById("titolo_eff").innerText, contents: data.blocks})
             }).then((res) => res.json())
-            .then((res) => console.log(res))
-            .catch((err) => console.log(err))
+                .then((res) => console.log(res))
+                .catch((err) => console.log(err))
         })
     } else if (sessionStorage.getItem("editorType") === "modify") {
         editor.save().then(data => {
@@ -272,7 +271,7 @@ saveButton.onclick = () => {
             });
             console.log("titleeff")
             console.log(document.getElementById("titolo_eff"));
-            if(title !== document.getElementById("titolo_eff").innerText){
+            if (title !== document.getElementById("titolo_eff").innerText) {
                 fetch("/saveNote/modify", {
                     method: "POST",
                     headers: {
@@ -292,7 +291,7 @@ saveButton.onclick = () => {
                         console.log("res");
                         console.log(res);
                     });
-            }else{
+            } else {
                 fetch("/saveNote/modify", {
                     method: "POST",
                     headers: {
@@ -329,6 +328,6 @@ titleInput.onblur = () => {
     document.getElementById("titolo_eff").innerText = titleInput.value;
 }
 
-if(sessionStorage.getItem("token") === null || sessionStorage.getItem("noteName") === null){
+if (sessionStorage.getItem("token") === null) {
     window.location.href = "./accedi.html";
 }
