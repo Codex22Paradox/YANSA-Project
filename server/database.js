@@ -57,6 +57,7 @@ export const databaseFunction = {
     },
 
     searchNotes: async (searchString) => {
+        searchString = searchString.replace(/ /g, '%20');
         let results = [];
         const sql = `
             SELECT a.id,
@@ -75,9 +76,6 @@ export const databaseFunction = {
             ORDER BY count DESC
         `;
         try {
-            console.log('Search string:', searchString); // Log the search string
-            console.log('With parameters:', [searchString, searchString, types, '*' + searchString + '*']);
-
             const [queryResults] = await db.promise().query(sql, [searchString, searchString, types, '*' + searchString + '*']);
             // Convert the count to an integer
             results = queryResults.map(result => ({...result, count: parseInt(result.count)}));
