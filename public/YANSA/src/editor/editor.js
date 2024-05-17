@@ -240,7 +240,12 @@ saveButton.onclick = () => {
                 },
                 body: JSON.stringify({title: document.getElementById("titolo_eff").innerText, contents: data.blocks})
             }).then((res) => res.json())
-                .then((res) => console.log(res))
+                .then((res) => {
+                    console.log(res);
+                    sessionStorage.setItem("editorType", "modify");
+                    sessionStorage.setItem("noteName", document.getElementById("titolo_eff").innerText)
+                    window.location.reload();
+                })
                 .catch((err) => console.log(err))
         })
     } else if (sessionStorage.getItem("editorType") === "modify") {
