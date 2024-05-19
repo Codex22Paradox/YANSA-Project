@@ -264,7 +264,7 @@ document.getElementById("pigliaCatFeed").onclick = async () => {
   await render(
     document.getElementById("noteContainer"),
     document.getElementById("loader"),
-    await prendiAppunti(await pickData("/userFeed"))
+    await prendiAppunti(await categoryFeed(catSelezionate))
   );
 };
 
