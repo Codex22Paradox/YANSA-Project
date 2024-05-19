@@ -17,7 +17,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Utilizza il middleware express.json() per analizzare le richieste JSON
-app.use(express.json({ limit:"50mb" }));
+app.use(express.json({limit: "50mb"}));
 // Fornisce la cartella "public"
 app.use(express.static(path.join(__dirname, 'public')));
 // Configura express-session
@@ -377,10 +377,11 @@ app.get('/notesAccount/:username/', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
-app.get('/searchNotes/:searchString', async (req, res) => {
+app.post('/searchNotes/:searchString', async (req, res) => {
     const searchString = req.params.searchString;
+    const category = req.body.category;
     try {
-        const results = await databaseFunction.searchNotes(searchString);
+        const results = await databaseFunction.searchNotes(searchString, category);
         res.json(results);
     } catch (error) {
         console.error(error);
@@ -406,7 +407,7 @@ app.get('/getNote/:title', async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        res.status(500).json({ "result": "something went wrong" });
+        res.status(500).json({"result": "something went wrong"});
     }
 });
 app.get('/s/getNote/:title', async (req, res) => {
@@ -492,9 +493,9 @@ app.get('/userRating/:note', async (req, res) => {
 app.get('/categories', async (req, res) => {
     try {
         const result = await databaseFunction.getAllCategories();
-        res.status(200).json({ "result": result });
+        res.status(200).json({"result": result});
     } catch (error) {
-        res.status(500).json({ "error": "somathing went wrong"})
+        res.status(500).json({"error": "somathing went wrong"})
     }
 });
 
