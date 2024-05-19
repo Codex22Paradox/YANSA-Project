@@ -17,7 +17,7 @@ const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 // Utilizza il middleware express.json() per analizzare le richieste JSON
-app.use(express.json());
+app.use(express.json({ limit:"50mb" }));
 // Fornisce la cartella "public"
 app.use(express.static(path.join(__dirname, 'public')));
 // Configura express-session
@@ -161,7 +161,7 @@ app.post('/saveNote/new', async (req, res) => {
         if (result.affectedRows > 0) {
             for (const element of blocks) {
                 const i = blocks.indexOf(element);
-                console.log(JSON.stringify(element.data))
+                console.log(element.data)
                 const results = await databaseFunction.saveComponent(element, result.insertId, i);
             }
             res.status(200).json({"Result": "OK"});
@@ -356,7 +356,8 @@ app.post('/insertRating/:note', async (req, res) => {
     } catch (error) {
         res.status(500).send("Something went wrong");
     }
-})
+});
+
 //Metodi get
 app.get('/notesAccount/:username/', async (req, res) => {
     const username = req.userId;
@@ -391,12 +392,13 @@ app.get('/getNote/:title', async (req, res) => {
     const username = req.userId;
     try {
         const result = await databaseFunction.getNote(title);
+        const cat = await databaseFunction.getNoteData(title);
         if (username === result[0].username) {
-            const note = createNoteJson(result);
+            const note = createNoteJson(result, cat.categorie);
             res.status(200).json({"Result": JSON.stringify(note)})
         } else {
             if (result[0].visibilita !== 0) {
-                const note = createNoteJson(result);
+                const note = createNoteJson(result, cat.categorie);
                 res.status(200).json({"Result": JSON.stringify(note)})
             } else {
                 res.status(401).json({"Result": "Unauthorized"})
@@ -404,7 +406,7 @@ app.get('/getNote/:title', async (req, res) => {
         }
     } catch (error) {
         console.log(error)
-        res.status(500).send("a Internal server error");
+        res.status(500).json({ "result": "something went wrong" });
     }
 });
 app.get('/s/getNote/:title', async (req, res) => {
@@ -487,6 +489,14 @@ app.get('/userRating/:note', async (req, res) => {
         res.status(500).send('Something went wrong');
     }
 })
+app.get('/categories', async (req, res) => {
+    try {
+        const result = await databaseFunction.getAllCategories();
+        res.status(200).json({ "result": result });
+    } catch (error) {
+        res.status(500).json({ "error": "somathing went wrong"})
+    }
+});
 
 //Metodi delete
 app.delete('/deleteNote/:title', async (req, res) => {

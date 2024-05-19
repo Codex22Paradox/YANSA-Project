@@ -6,6 +6,14 @@ let title = document.getElementById("titolo_eff");
 const btnRating = document.getElementById("ratingInvia");
 const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
+const templateCat = `<div class="wrapper">
+<label>
+    <input class="radio-input" type="checkbox" name="engine" id="%ID"/>
+    <span class="radio-tile">
+<span class="radio-labelEditor">%CAT</span>
+</span>
+</label>
+</div>`;
 for (let i = 1; i < 6; i++) {
     ratings.push(document.getElementById("star" + i));
 }
@@ -144,8 +152,8 @@ const editor = new EditorJS({
         table: {
             class: Table,
             inlineToolbar: true
-        },
-        image: SimpleImage
+        }/*,
+        image: SimpleImage*/
     },
     autofocus: true,
     placeholder: "Inizia a scrivere.."
@@ -158,6 +166,22 @@ editor.isReady
         new DragDrop(editor);
         console.log("Editor.js is ready to work!");
         if (sessionStorage.getItem("editorType") === "new") {
+            fetch('/categories', {
+                method: "GET",
+                headers: {
+                    "Authorization": sessionStorage.getItem("token"),
+                    "content-type": "application/json"
+                }
+            }).then(res => res.json())
+            .then(res => {
+                let html = "";
+                res.result.forEach(element => {
+                    let row = templateCat.replace("%ID", element);
+                    row = row.replace("%CAT", element);
+                    html+=row;
+                })
+                document.getElementById("categories").innerHTML = html;
+            })
         } else if (sessionStorage.getItem("editorType") === "modify") {
             fetch("/getNote/" + sessionStorage.getItem("noteName"), {
                 method: "GET",
@@ -185,6 +209,27 @@ editor.isReady
                             snapshot = data;
                         });
                     });
+                    fetch('/categories', {
+                        method: "GET",
+                        headers: {
+                            "Authorization": sessionStorage.getItem("token"),
+                            "content-type": "application/json"
+                        }
+                    }).then(res => res.json())
+                    .then(res => {
+                        let html = "";
+                        res.result.forEach(element => {
+                            let row = templateCat.replace("%ID", element);
+                            row = row.replace("%CAT", element);
+                            html+=row;
+                        })
+                        document.getElementById("categories").innerHTML = html;
+                    }).then(() => {
+                        console.log(res)
+                        res.categories.forEach(element => {
+                            document.getElementById(element).checked = true;
+                        })
+                    })
                 });
         } else if (sessionStorage.getItem("editorType") === "view") {
             document.getElementById("ratingInput").classList.remove("d-none")
@@ -208,6 +253,18 @@ editor.isReady
                     titleInput.value = noteTitle;
                     document.getElementById("titolo_eff").innerText = noteTitle;
                     editor.render(res.data);
+                    let html = "";
+                    res.categories.forEach(element => {
+                        let row = templateCat.replace("%ID", element);
+                        row = row.replace("%CAT", element);
+                        html+=row;
+                    })
+                    document.getElementById("categories").innerHTML = html;
+                    res.categories.forEach(element => {
+                        const cat = document.getElementById(element);
+                        cat.checked = true;
+                        cat.setAttribute("disabled", "");
+                    })
                     fetch("/userRating/" + noteTitle + "-" + sessionStorage.getItem("noteAuthor"), {
                         method: "GET",
                         headers: {
@@ -215,13 +272,13 @@ editor.isReady
                             "Authorization": sessionStorage.getItem("token")
                         }
                     }).then((res) => res.json())
-                        .then((res) => {
-                            if (res.result) {
-                                ratings.forEach((element) => element.setAttribute("disabled", ""))
-                                document.getElementById("star" + res.result.valore).checked = true;
-                                btnRating.setAttribute("disabled", "");
-                            }
-                        })
+                    .then((res) => {
+                        if (res.result) {
+                            ratings.forEach((element) => element.setAttribute("disabled", ""))
+                            document.getElementById("star" + res.result.valore).checked = true;
+                            btnRating.setAttribute("disabled", "");
+                        }
+                    })
                 });
         }
     })

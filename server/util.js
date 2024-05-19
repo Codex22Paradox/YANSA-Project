@@ -1,6 +1,6 @@
 import { databaseFunction } from "./database.js";
 
-export const createNoteJson = (array) => {
+export const createNoteJson = (array, cat) => {
     array.sort((a, b) => a.posizione - b.posizione);
     const json = {
         author: array[0].username,
@@ -11,7 +11,8 @@ export const createNoteJson = (array) => {
             time: new Date(),
             version: "2.29.1",
             blocks: []
-        }
+        },
+        categories: cat
     }
     array.forEach(element => {
         json.data.blocks.push({

@@ -246,8 +246,8 @@ export const databaseFunction = {
                      WHERE a.nome = ?`;
     try {
       const [results] = await db.promise().query(sql, [title]);
-      console.log("res1");
-      console.log(results);
+      /*console.log("res1");
+      console.log(results);*/
       return results;
     } catch (error) {
       console.log(error);
@@ -264,6 +264,8 @@ export const databaseFunction = {
                      WHERE a.nome = ?`;
     try {
       const [results] = await db.promise().query(sql, [title]);
+      console.log("results notedata")
+      console.log(results)
       const returnable = {
         id: results[0].id,
         nome: results[0].nome,
@@ -744,4 +746,18 @@ export const databaseFunction = {
       return null;
     }
   },
+
+  getAllCategories: async () => {
+    const sql = `SELECT nome FROM categoria`;
+    try {
+      const [results] = await db.promise().query(sql);
+      results.forEach((element, i) => {
+        results[i] = results[i].nome;
+      })
+      console.log(results)
+      return results;
+    } catch (error) {
+      return null;
+    }
+  }
 };
