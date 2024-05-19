@@ -225,7 +225,7 @@ let template2 = `
 <label>
   <input class="radio-input" type="checkbox" name="%CAT" />
   <span class="radio-tile">
-    <span class="radio-label">%CAT</span>
+    <span class="radio-labelEditor">%CAT</span>
   </span>
 </label>
 </div>`;
