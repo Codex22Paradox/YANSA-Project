@@ -2,6 +2,7 @@ window.onload = async () => {
   if (sessionStorage.getItem("token") === null) {
     window.location.href = "./accedi.html";
   }
+  await renderCheckbox(document.getElementById("listaCategorie"));
 };
 
 let ricercaCorrente = null;
@@ -30,8 +31,8 @@ cerca.addEventListener("input", async (event) => {
     clearTimeout(timer);
   } else {
     clearTimeout(timer);
-    loader.classList.remove("d-none"); 
-    div.classList.add("d-none"); 
+    loader.classList.remove("d-none");
+    div.classList.add("d-none");
     timer = setTimeout(async () => {
       if (ricercaCorrente) {
         ricercaCorrente.cancel = true;
@@ -41,7 +42,7 @@ cerca.addEventListener("input", async (event) => {
       if (ricercaCorrente.cancel) return;
       const finalArray = await createArray(array);
       loader.classList.add("d-none");
-      div.classList.remove("d-none"); 
+      div.classList.remove("d-none");
       await render(div, finalArray);
       if (array.length === 0) {
         div.innerHTML =
@@ -62,7 +63,7 @@ const search = async (testo, cancelToken) => {
   return await response.json();
 };
 
-const template = `        
+let template = `        
     <div class="col-auto mt-3">
     <div class="card" id="%ID">
       <div class="tools justify-content-end"></div>
@@ -80,9 +81,6 @@ const template = `
                   <div class="col-auto text-start">
                   <p class="text-white text-decoration-underline">%AUTORE</p>
                   </div>
-                  <div class="col-auto text-end">
-                   <p class="text-white">%COUNT</p>
-                  </div>
                   </div>
               <p class="text-white %TRONCA">%CONTENUTO</p>
             </div>
@@ -91,6 +89,7 @@ const template = `
       </div>
     </div>
   </div>`;
+
 const pickComponent = async (url) => {
   let rsp = await fetch(url, {
     method: "GET",
@@ -128,12 +127,11 @@ const createArray = async (array) => {
   return result;
 };
 
-const render = async (div, array) => {
+const render = async (div, div2, listino) => {
   div.innerHTML = "";
   let output = "";
   let controllino = 1;
-  array.forEach((appunto) => {
-    console.log(appunto);
+  listino.forEach((appunto) => {
     let troncatura = "";
     if (controllino === 1) {
       troncatura = "truncate-md";
@@ -148,7 +146,6 @@ const render = async (div, array) => {
     html = html.replace("%DATA", dataIta(appunto.data.substring(0, 10)));
     html = html.replace("%CONTENUTO", appunto.contenuto);
     html = html.replace("%TRONCA", troncatura);
-    html = html.replace("%COUNT", "Ripetizioni: " + appunto.count);
     html = html.replace("%ID", appunto.id);
     output += html;
     if (controllino === 1) {
@@ -159,12 +156,23 @@ const render = async (div, array) => {
       controllino = 1;
     }
   });
+  if (listino.length === 0) {
+    div.classList.add("d-none");
+    div2.classList.remove("d-none");
+  } else {
+    div.classList.remove("d-none");
+    div2.classList.add("d-none");
+  }
   div.innerHTML = output;
-  array.forEach((appunto) => {
+  listino.forEach((appunto) => {
     document.getElementById(appunto.id).addEventListener("click", function () {
       sessionStorage.setItem("noteName", appunto.titolo);
       sessionStorage.setItem("noteAuthor", appunto.autore);
-      sessionStorage.setItem("editorType", "view");
+      if (appunto.autore == sessionStorage.getItem("username")) {
+        sessionStorage.setItem("editorType", "modify");
+      } else {
+        sessionStorage.setItem("editorType", "view");
+      }
       window.location.href = "./editor.html";
     });
   });
@@ -210,4 +218,87 @@ popoverTriggerList.forEach(function (popoverTriggerEl) {
 });
 document.getElementById("setting").onclick = () => {
   window.location.href = "./setting.html";
+};
+
+let template2 = `
+<div class="wrapper">
+<label>
+  <input class="radio-input" type="checkbox" name="%CAT" />
+  <span class="radio-tile">
+    <span class="radio-label">%CAT</span>
+  </span>
+</label>
+</div>`;
+
+const renderCheckbox = async (div) => {
+  const listaCat = await pickData("/followedCategories/");
+  let output = "";
+  listaCat.forEach((categoria) => {
+    let html;
+    html = template2.replaceAll("%CAT", categoria);
+    output += html;
+  });
+  div.innerHTML = output;
+};
+
+const pickData = async (url) => {
+  let rsp = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: sessionStorage.getItem("token"),
+    },
+  });
+  rsp = await rsp.json();
+  return rsp;
+};
+
+document.getElementById("pigliaCatFeed").onclick = async () => {
+  const checkboxes = document.querySelectorAll(".radio-input");
+  const catSelezionate = [];
+  checkboxes.forEach(function (checkbox) {
+    if (checkbox.checked) {
+      catSelezionate.push(checkbox.name);
+    }
+  });
+  await render(
+    document.getElementById("noteContainer"),
+    document.getElementById("loader"),
+    await prendiAppunti(await pickData("/userFeed"))
+  );
+};
+
+const categoryFeed = async (cat) => {
+  let rsp = await fetch("/categoryFeed", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: sessionStorage.getItem("token"),
+    },
+    body: JSON.stringify({ category: cat }),
+  });
+  rsp = await rsp.json();
+  return rsp;
+};
+
+const prendiAppunti = async (value) => {
+  const tutto = [];
+  for (let index = 0; index < value.length; index++) {
+    let obj = {
+      titolo: value[index].nome,
+      id: value[index].id,
+    };
+    let res = await pickComponent("/getNote/" + value[index].nome);
+    obj["data"] = res.dateCreation;
+    obj["autore"] = res.author;
+    let sum = "";
+    res.data.blocks.forEach((element) => {
+      if (element.type === "paragraph") {
+        sum += element.data.text;
+      }
+    });
+    obj["contenuto"] = sum;
+    tutto.push(obj);
+  }
+  return tutto;
 };
