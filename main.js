@@ -377,11 +377,23 @@ app.get('/notesAccount/:username/', async (req, res) => {
         res.status(500).send('Errore del server');
     }
 });
-app.post('/searchNotes/:searchString', async (req, res) => {
-    const searchString = req.params.searchString;
-    const category = req.body.category;
+app.post('/searchNotes', async (req, res) => {
+    const searchString = req.body.searchString;
+    let category = req.body.category;
+    category = category.map(cat => {
+        return cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+    });
     try {
-        const results = await databaseFunction.searchNotes(searchString, category);
+        let results = [];
+        if (searchString !== "") {
+            if (category.length === 0) {
+                results = await databaseFunction.searchNotes(searchString);
+            } else {
+                results = await databaseFunction.searchNotesCategory(searchString, category);
+            }
+        } else {
+            results = await databaseFunction.searchNotesByCategories(category);
+        }
         res.json(results);
     } catch (error) {
         console.error(error);

@@ -64,8 +64,29 @@ export const databaseFunction = {
             return null;
         }
     },
+    searchNotesByCategories: async (categories) => {
+        // Convert the categories array to a string where each category is surrounded by quotes
+        const categoriesString = categories.map(category => `'${category}'`).join(',');
 
-    searchNotes: async (searchString, categories) => {
+        const sql = `
+            SELECT a.id, a.nome, a.visibilita, a.autore, a.dataCreazione, a.dataModifica
+            FROM appunto AS a
+            JOIN categoriaAppunto AS ca ON a.id = ca.idAppunto
+            JOIN categoria AS c ON ca.idCategoria = c.id
+            WHERE c.nome IN (${categoriesString})
+              AND a.visibilita = 1
+        `;
+
+        try {
+            const [results] = await db.promise().query(sql);
+            return results;
+        } catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    searchNotesCategory: async (searchString, categories) => {
+        console.log(categories);
         searchString = searchString.replace(/ /g, "%20");
         let results = [];
         const sql = `
@@ -97,6 +118,47 @@ export const databaseFunction = {
                     types,
                     "*" + searchString + "*",
                     categories
+                ]);
+            // Convert the count to an integer
+            results = queryResults.map((result) => ({
+                ...result,
+                count: parseInt(result.count),
+            }));
+            console.log("Search results:", results); // Log the results
+            return results;
+        } catch (error) {
+            console.error("Search error:", error); // Log the error
+        }
+        return results;
+    },
+    searchNotes: async (searchString) => {
+        searchString = searchString.replace(/ /g, "%20");
+        let results = [];
+        const sql = `
+            SELECT a.id,
+                   a.nome,
+                   a.visibilita,
+                   a.autore,
+                   a.dataCreazione,
+                   a.dataModifica,
+                   ROUND(SUM((LENGTH(LOWER(c.contenuto)) - LENGTH(REPLACE(LOWER(c.contenuto), LOWER(?), ''))) /
+                             LENGTH(LOWER(?)))) AS count
+            FROM appunto AS a
+                     JOIN componente AS c ON a.id = c.idAppunto
+            WHERE c.tipo IN (?)
+              AND visibilita = 1
+              AND MATCH(c.contenuto) AGAINST(? IN BOOLEAN MODE)
+            GROUP BY a.id, a.nome, a.visibilita, a.autore, a.dataCreazione, a.dataModifica
+            ORDER BY count DESC
+        `;
+        try {
+            const [queryResults] = await db
+                .promise()
+                .query(sql, [
+                    searchString,
+                    searchString,
+                    types,
+                    "*" + searchString + "*"
                 ]);
             // Convert the count to an integer
             results = queryResults.map((result) => ({
