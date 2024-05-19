@@ -34,16 +34,11 @@ cerca.addEventListener("input", async (event) => {
     loader.classList.remove("d-none");
     div.classList.add("d-none");
     timer = setTimeout(async () => {
-      if (ricercaCorrente) {
-        ricercaCorrente.cancel = true;
-      }
-      ricercaCorrente = { cancel: false };
-      const array = await search(event.target.value, ricercaCorrente);
-      if (ricercaCorrente.cancel) return;
+      const array = await search(event.target.value, []);
       const finalArray = await createArray(array);
       loader.classList.add("d-none");
       div.classList.remove("d-none");
-      await render(div, finalArray);
+      await render(div, document.getElementById("loader"), finalArray);
       if (array.length === 0) {
         div.innerHTML =
           '<h1 class="text-center text-white">Nessun appunto trovato</h1>';
@@ -52,15 +47,17 @@ cerca.addEventListener("input", async (event) => {
   }
 });
 
-const search = async (testo, cancelToken) => {
-  const token = sessionStorage.getItem("token");
-  const response = await fetch(`/searchNotes/${testo}`, {
+const search = async (testo, cat) => {
+  let rsp = await fetch("/searchNotes", {
+    method: "POST",
     headers: {
-      Authorization: token,
+      "Content-Type": "application/json",
+      Authorization: sessionStorage.getItem("token"),
     },
+    body: JSON.stringify({ category: cat, searchString: testo }),
   });
-  if (cancelToken.cancel) return [];
-  return await response.json();
+  rsp = await rsp.json();
+  return rsp;
 };
 
 let template = `        
@@ -231,9 +228,9 @@ let template2 = `
 </div>`;
 
 const renderCheckbox = async (div) => {
-  const listaCat = await pickData("/followedCategories/");
+  const listaCat = await pickData("/categories");
   let output = "";
-  listaCat.forEach((categoria) => {
+  listaCat.result.forEach((categoria) => {
     let html;
     html = template2.replaceAll("%CAT", categoria);
     output += html;
