@@ -6,7 +6,8 @@ let title = document.getElementById("titolo_eff");
 const btnRating = document.getElementById("ratingInvia");
 const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
-const templateCat = `<div class="wrapper">
+const modalIstruzioni = new bootstrap.Modal(document.getElementById("modalIstruzioni"));
+const templateCat = `<div class="wrapper"> 
 <label>
     <input class="radio-input" type="checkbox" name="engine" id="%ID"/>
     <span class="radio-tile">
@@ -166,6 +167,7 @@ editor.isReady
         new DragDrop(editor);
         console.log("Editor.js is ready to work!");
         if (sessionStorage.getItem("editorType") === "new") {
+            modalIstruzioni.show();
             fetch('/categories', {
                 method: "GET",
                 headers: {
@@ -173,16 +175,17 @@ editor.isReady
                     "content-type": "application/json"
                 }
             }).then(res => res.json())
-            .then(res => {
-                let html = "";
-                res.result.forEach(element => {
-                    let row = templateCat.replace("%ID", element);
-                    row = row.replace("%CAT", element);
-                    html+=row;
+                .then(res => {
+                    let html = "";
+                    res.result.forEach(element => {
+                        let row = templateCat.replace("%ID", element);
+                        row = row.replace("%CAT", element);
+                        html += row;
+                    })
+                    document.getElementById("categories").innerHTML = html;
                 })
-                document.getElementById("categories").innerHTML = html;
-            })
         } else if (sessionStorage.getItem("editorType") === "modify") {
+            modalIstruzioni.show();
             fetch("/getNote/" + sessionStorage.getItem("noteName"), {
                 method: "GET",
                 headers: {
@@ -216,15 +219,15 @@ editor.isReady
                             "content-type": "application/json"
                         }
                     }).then(res => res.json())
-                    .then(res => {
-                        let html = "";
-                        res.result.forEach(element => {
-                            let row = templateCat.replace("%ID", element);
-                            row = row.replace("%CAT", element);
-                            html+=row;
-                        })
-                        document.getElementById("categories").innerHTML = html;
-                    }).then(() => {
+                        .then(res => {
+                            let html = "";
+                            res.result.forEach(element => {
+                                let row = templateCat.replace("%ID", element);
+                                row = row.replace("%CAT", element);
+                                html += row;
+                            })
+                            document.getElementById("categories").innerHTML = html;
+                        }).then(() => {
                         console.log(res)
                         res.categories.forEach(element => {
                             document.getElementById(element).checked = true;
@@ -257,7 +260,7 @@ editor.isReady
                     res.categories.forEach(element => {
                         let row = templateCat.replace("%ID", element);
                         row = row.replace("%CAT", element);
-                        html+=row;
+                        html += row;
                     })
                     document.getElementById("categories").innerHTML = html;
                     res.categories.forEach(element => {
@@ -272,13 +275,13 @@ editor.isReady
                             "Authorization": sessionStorage.getItem("token")
                         }
                     }).then((res) => res.json())
-                    .then((res) => {
-                        if (res.result) {
-                            ratings.forEach((element) => element.setAttribute("disabled", ""))
-                            document.getElementById("star" + res.result.valore).checked = true;
-                            btnRating.setAttribute("disabled", "");
-                        }
-                    })
+                        .then((res) => {
+                            if (res.result) {
+                                ratings.forEach((element) => element.setAttribute("disabled", ""))
+                                document.getElementById("star" + res.result.valore).checked = true;
+                                btnRating.setAttribute("disabled", "");
+                            }
+                        })
                 });
         }
     })
@@ -447,3 +450,19 @@ document.getElementById("setting").onclick = () => {
 document.getElementById("accountButton").onclick = () => {
     window.location.href = "./account.html";
 };
+let titoloEff = document.getElementById("titolo_eff");
+let titoloInput = document.getElementById("titoloInput");
+
+titoloEff.addEventListener("dblclick", function () {
+    if (sessionStorage.getItem("editorType") === "modify" || sessionStorage.getItem("editorType") === "new") {
+        titoloEff.classList.add("d-none");
+        titoloInput.classList.remove("d-none");
+    }
+});
+
+titleInput.addEventListener("blur", function () {
+    if (sessionStorage.getItem("editorType") === "modify" || sessionStorage.getItem("editorType") === "new") {
+        titoloEff.classList.remove("d-none");
+        titoloInput.classList.add("d-none");
+    }
+});

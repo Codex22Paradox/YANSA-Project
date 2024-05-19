@@ -81,22 +81,6 @@
     <div class="row mt-3">
         <div class="col text-start">
             <div class="row justify-content-start" id="titleInput">
-                <div class="col-8">
-                    <div class="form-label-group outline">
-                        <input
-                                type="text"
-                                id="titolo"
-                                class="form-control shadow-none border-light"
-                                placeholder=""
-                                required
-                        />
-                        <span
-                        ><label for="titolo" class="text-white"
-                        >Titolo</label
-                        ></span
-                        >
-                    </div>
-                </div>
                 <div class="col-auto">
                     <button type="button" class="btn btn-primary align-middle btn-lg" id="save">Salva <span
                             class="material-symbols-rounded align-middle">save</span>
@@ -155,6 +139,20 @@
         </div>
 
         <div class="col-6 text-center">
+            <div class="form-label-group outline d-none" id="titoloInput">
+                <input
+                        type="text"
+                        id="titolo"
+                        class="form-control shadow-none border-light"
+                        placeholder=""
+                        required
+                />
+                <span
+                ><label for="titolo" class="text-white"
+                >Titolo</label
+                ></span
+                >
+            </div>
             <h1 id="titolo_eff">TITOLO</h1>
         </div>
         <div class="col-3 text-end mt-3">
@@ -191,8 +189,45 @@
             </div>
             <div class="col mt-3 text-end">
                 <div class="radio-inputsEditor" id="categories">
-                    
+
                 </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalIstruzioni" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header border-0">
+                <h1>Istruzioni</h1>
+                <button type="button" class="btn btn-dark btn-lg align-middle ms-auto" id="closeModalNuovaChat"
+                        data-bs-dismiss="modal"
+                ><span class="material-symbols-rounded align-middle">
+close
+</span></button>
+            </div>
+            <div class="modal-body text-white">
+                <h4>
+                    Premi sul pulsante con il più per creare nuovi blocchi di testo, tabelle, liste e titoli.
+                    <br>
+                    <br>
+                    Seleziona il testo e modificalo ai tuo piacimento grazie alle impostazioni fornite per colori,
+                    allineamento, sottolineatura e altro.
+                    <br>
+                    <br>
+                    Premi sul pulsante con il floppy disk per salvare la nota.
+                    <br>
+                    <br>
+                    Ricordati di selezionare le categorie dell'appunto così da renderle più visibile agli altri utenti.
+                    <br>
+                    <br>
+                </h4>
+                <h2>Buona scrittura</h2>
             </div>
         </div>
     </div>
