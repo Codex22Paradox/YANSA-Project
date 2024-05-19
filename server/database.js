@@ -654,6 +654,7 @@ export const databaseFunction = {
     },
 
     searchUsers: async (searchString, currentUsername) => {
+        searchString = searchString.replace(/ /g, "%20");
         const sql = `
             SELECT u.id,
                    u.username,
@@ -676,6 +677,7 @@ export const databaseFunction = {
     },
 
     searchCategories: async (searchString) => {
+        searchString = searchString.replace(/ /g, "%20");
         const sql = `
             SELECT id, nome
             FROM categoria
