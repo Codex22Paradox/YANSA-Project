@@ -121,7 +121,6 @@ let template2 = `
 </div>`;
 
 const render = async (div, div2, listino) => {
-  console.log(listino.length);
   if (listino.length !== 0) {
     div.innerHTML = "";
     let output = "";
