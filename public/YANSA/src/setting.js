@@ -179,3 +179,124 @@ popoverTriggerList.forEach(function (popoverTriggerEl) {
         });
     })
 })
+
+let darkModeCheckbox = document.getElementById('darkMode');
+let darkModeState = sessionStorage.getItem('darkMode');
+let body = document.body;
+let html = document.documentElement;
+let offcanvasElements = document.querySelectorAll('.offcanvas');
+if (darkModeState === 'true') {
+    darkModeCheckbox.checked = true;
+    let tabs = document.querySelectorAll('.tab');
+    let navCards = document.querySelectorAll('.navigation-card');
+    let bgDarkLightElements = document.querySelectorAll('.bg-dark-light');
+
+    tabs.forEach(tab => {
+        tab.classList.remove('tab');
+        tab.classList.add('tab-dark');
+    });
+
+    navCards.forEach(navCard => {
+        navCard.classList.remove('navigation-card');
+        navCard.classList.add('navigation-card-dark');
+    });
+    offcanvasElements.forEach(offcanvasElement => {
+        offcanvasElement.classList.replace('offcanvas-light', 'offcanvas-dark');
+    });
+
+    bgDarkLightElements.forEach(element => {
+        element.classList.replace('bg-dark-light', 'bg-dark');
+    });
+    body.classList.remove('body');
+    body.classList.add('body-dark');
+
+    html.setAttribute('data-bs-theme', 'dark');
+} else if (darkModeState === 'false') {
+    darkModeCheckbox.checked = false;
+    let darkTabs = document.querySelectorAll('.tab-dark');
+    let darkNavCards = document.querySelectorAll('.navigation-card-dark');
+    let bgDarkElements = document.querySelectorAll('.bg-dark');
+
+    darkTabs.forEach(tab => {
+        tab.classList.remove('tab-dark');
+        tab.classList.add('tab');
+    });
+
+    darkNavCards.forEach(navCard => {
+        navCard.classList.remove('navigation-card-dark');
+        navCard.classList.add('navigation-card');
+    });
+
+    bgDarkElements.forEach(element => {
+        element.classList.replace('bg-dark', 'bg-dark-light');
+    });
+
+    body.classList.remove('body-dark');
+    body.classList.add('body');
+    offcanvasElements.forEach(offcanvasElement => {
+        offcanvasElement.classList.replace('offcanvas-dark', 'offcanvas-light');
+    });
+
+    html.setAttribute('data-bs-theme', 'light');
+}
+
+document.getElementById('darkMode').addEventListener('change', function () {
+    let body = document.body;
+    let html = document.documentElement;
+    let offcanvasElements = document.querySelectorAll('.offcanvas');
+
+    if (this.checked) {
+        sessionStorage.setItem('darkMode', 'true');
+        let tabs = document.querySelectorAll('.tab');
+        let navCards = document.querySelectorAll('.navigation-card');
+        let bgDarkLightElements = document.querySelectorAll('.bg-dark-light');
+
+        tabs.forEach(tab => {
+            tab.classList.remove('tab');
+            tab.classList.add('tab-dark');
+        });
+
+        navCards.forEach(navCard => {
+            navCard.classList.remove('navigation-card');
+            navCard.classList.add('navigation-card-dark');
+        });
+        offcanvasElements.forEach(offcanvasElement => {
+            offcanvasElement.classList.replace('offcanvas-light', 'offcanvas-dark');
+        });
+
+        bgDarkLightElements.forEach(element => {
+            element.classList.replace('bg-dark-light', 'bg-dark');
+        });
+        body.classList.remove('body');
+        body.classList.add('body-dark');
+
+        html.setAttribute('data-bs-theme', 'dark');
+    } else {
+        sessionStorage.setItem('darkMode', 'false');
+        let darkTabs = document.querySelectorAll('.tab-dark');
+        let darkNavCards = document.querySelectorAll('.navigation-card-dark');
+        let bgDarkElements = document.querySelectorAll('.bg-dark');
+
+        darkTabs.forEach(tab => {
+            tab.classList.remove('tab-dark');
+            tab.classList.add('tab');
+        });
+
+        darkNavCards.forEach(navCard => {
+            navCard.classList.remove('navigation-card-dark');
+            navCard.classList.add('navigation-card');
+        });
+
+        bgDarkElements.forEach(element => {
+            element.classList.replace('bg-dark', 'bg-dark-light');
+        });
+
+        body.classList.remove('body-dark');
+        body.classList.add('body');
+        offcanvasElements.forEach(offcanvasElement => {
+            offcanvasElement.classList.replace('offcanvas-dark', 'offcanvas-light');
+        });
+
+        html.setAttribute('data-bs-theme', 'light');
+    }
+});

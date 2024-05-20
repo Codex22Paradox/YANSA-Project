@@ -1,11 +1,17 @@
-body {
+.body {
     font-family: "Lexend", system-ui;
     margin: 0;
     padding: 0;
     background-color: #020202;
 }
 
-.bg-dark {
+.body-dark {
+    font-family: "Lexend", system-ui;
+    margin: 0;
+    padding: 0;
+}
+
+.bg-dark-light {
     background-color: #020202 !important;
 }
 
@@ -18,10 +24,16 @@ h1 {
     font-style: normal;
 }
 
-.offcanvas {
-    background-color: #020202;
+.offcanvas-light {
+    background-color: #020202 !important;
     --bs-offcanvas-width: 40vh;
 }
+
+.offcanvas-dark {
+    background-color: rgb(33, 37, 41) !important;
+    --bs-offcanvas-width: 40vh;
+}
+
 
 .offcanvas-body {
     overflow-x: hidden; /* Impedisce lo scorrimento orizzontale */
@@ -800,6 +812,39 @@ a.article:hover {
     background-color: rgb(223, 223, 223);
 }
 
+.navigation-card-dark {
+    width: fit-content;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 35px;
+    background-color: rgb(2, 2, 2);
+    padding: 15px 15px;
+    border-bottom-right-radius: 40px;
+    border-top-right-radius: 40px;
+    z-index: 9999;
+}
+
+.tab-dark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    overflow: hidden;
+    background-color: rgb(1, 1, 1);
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.tab-dark:hover {
+    background-color: rgba(17, 17, 17, 0.92);
+}
+
 .card {
     width: 25rem;
     background-color: #157145;
@@ -999,12 +1044,20 @@ a.article:hover {
     padding: 0.625rem;
 }
 
-#editorjs-container {
+.editorjs-container {
     min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
-    background-color: #ffffff; /* Imposta il colore di sfondo su bianco */
+    background-color: #ffffff;
     margin-left: auto;
     margin-right: auto;
 }
+
+.editorjs-container-dark {
+    min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
+    background-color: #020202; /* Imposta il colore di sfondo su bianco */
+    margin-left: auto;
+    margin-right: auto;
+}
+
 
 .ce-header {
     color: #000000;
@@ -1589,4 +1642,52 @@ line {
     left: calc(100% - var(--circle-diameter) - var(--switch-offset));
     -webkit-box-shadow: var(--circle-checked-shadow);
     box-shadow: var(--circle-checked-shadow);
+}
+
+.theme-checkbox {
+    --toggle-size: 16px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 4.25em;
+    height: 2.125em;
+    background: -webkit-gradient(linear, left top, right top, color-stop(50%, #efefef), color-stop(50%, #020202)) no-repeat;
+    background: -o-linear-gradient(left, #efefef 50%, #020202 50%) no-repeat;
+    background: linear-gradient(to right, #efefef 50%, #020202 50%) no-repeat;
+    background-size: 205%;
+    background-position: 0;
+    -webkit-transition: 0.4s;
+    -o-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 99em;
+    position: relative;
+    cursor: pointer;
+    font-size: var(--toggle-size);
+}
+
+.theme-checkbox::before {
+    content: "";
+    width: 1.25em;
+    height: 1.25em;
+    position: absolute;
+    top: 0.438em;
+    left: 0.438em;
+    background: -webkit-gradient(linear, left top, right top, color-stop(50%, #efefef), color-stop(50%, #020202)) no-repeat;
+    background: -o-linear-gradient(left, #efefef 50%, #020202 50%) no-repeat;
+    background: linear-gradient(to right, #efefef 50%, #020202 50%) no-repeat;
+    background-size: 205%;
+    background-position: 100%;
+    border-radius: 50%;
+    -webkit-transition: 0.4s;
+    -o-transition: 0.4s;
+    transition: 0.4s;
+}
+
+.theme-checkbox:checked::before {
+    left: calc(100% - 1.25em - 0.438em);
+    background-position: 0;
+}
+
+.theme-checkbox:checked {
+    background-position: 100%;
 }

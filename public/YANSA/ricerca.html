@@ -40,7 +40,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <link rel="stylesheet" href="./style.css"/>
 </head>
-<body>
+<body class="body">
 <div
         class="navigation-card position-fixed top-50 start-0 translate-middle-y d-flex flex-column align-items-center justify-content-center"
 >
@@ -62,31 +62,40 @@
 </div>
 <div class="container-fluid mt-3">
     <div
-            class="row d-flex align-items-center position-sticky top-0 fixed-top bg-dark rounded-3"
+            class="row d-flex align-items-center position-sticky top-0 fixed-top bg-dark-light rounded-3"
     >
         <div class="col-auto">
             <h1>Ricerca</h1>
         </div>
         <div class="col-auto ms-auto">
-            <button
-                    class="btn"
-                    id="avatar-container"
-                    type="button"
-                    data-bs-toggle="popover"
-                    title=""
-                    data-bs-content="<button id='logout' class='btn btn-outline-danger btn-sm align-middle'>Logout <span class='material-symbols-rounded align-middle'>logout</span></button>"
-                    data-bs-html="true"
-            >
-                <img
-                        src="./images/Logo.png"
-                        alt="avatar"
-                        class="rounded-circle d-flex align-self-start shadow-1-strong border border-2 border-light"
-                        width="50"
-                        height="50"
-                        id="avatar"
-                />
-            </button>
+            <div class="row">
+                <div class="col-auto">
+                    <button
+                            class="btn"
+                            id="avatar-container"
+                            type="button"
+                            data-bs-toggle="popover"
+                            title=""
+                            data-bs-content="<span id='logout' class='text-decoration-underline text-white'>Esci dal tuo account</span>"
+                            data-bs-html="true"
+                    >
+                        <img
+                                src="./images/Logo.png"
+                                alt="avatar"
+                                class="rounded-circle d-flex align-self-start shadow-1-strong border border-2 border-light"
+                                width="50"
+                                height="50"
+                                id="avatar"
+                        />
+                    </button>
+                </div>
+                <div class="col-auto align-middle">
+                    <input type="checkbox" class="theme-checkbox" id="darkMode" title="darkmode">
+                </div>
+            </div>
+
         </div>
+
     </div>
 </div>
 <div class="container-fluid mt-3">

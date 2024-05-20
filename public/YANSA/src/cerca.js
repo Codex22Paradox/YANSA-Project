@@ -42,8 +42,7 @@ cerca.addEventListener("input", async (event) => {
             if (array.length == 0) {
                 div.classList.remove("d-none");
                 loader.classList.add("d-none");
-                div.innerHTML =
-                    '<h1 class="text-center text-white">Nessun appunto trovato</h1>';
+                div.innerHTML = '<h1 class="text-center text-white">Nessun appunto trovato</h1>';
             }
         }, 500);
     }
@@ -51,12 +50,9 @@ cerca.addEventListener("input", async (event) => {
 
 const search = async (testo, cat) => {
     let rsp = await fetch("/searchNotes", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: sessionStorage.getItem("token"),
-        },
-        body: JSON.stringify({category: cat, searchString: testo}),
+        method: "POST", headers: {
+            "Content-Type": "application/json", Authorization: sessionStorage.getItem("token"),
+        }, body: JSON.stringify({category: cat, searchString: testo}),
     });
     rsp = await rsp.json();
     return rsp;
@@ -91,10 +87,8 @@ let template = `
 
 const pickComponent = async (url) => {
     let rsp = await fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: sessionStorage.getItem("token"),
+        method: "GET", headers: {
+            "Content-Type": "application/json", Authorization: sessionStorage.getItem("token"),
         },
     });
     rsp = await rsp.json();
@@ -107,9 +101,7 @@ const createArray = async (array) => {
     for (let index = 0; index < array.length; index++) {
         console.log(array[index]);
         let obj = {
-            titolo: array[index].nome,
-            count: array[index].count,
-            id: array[index].id,
+            titolo: array[index].nome, count: array[index].count, id: array[index].id,
         };
         let res = await pickComponent("/getNote/" + array[index].nome);
         obj["data"] = res.dateCreation;
@@ -185,13 +177,10 @@ const dataIta = (dataEstera) => {
     return giorno + "/" + mese + "/" + anno;
 };
 
-let popoverTriggerList = [].slice.call(
-    document.querySelectorAll('[data-bs-toggle="popover"]')
-);
+let popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
 let popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl, {
-        sanitize: false,
-        customClass: "green-popover",
+        sanitize: false, customClass: "green-popover",
     });
 });
 
@@ -247,10 +236,8 @@ const renderCheckbox = async (div) => {
 
 const pickData = async (url) => {
     let rsp = await fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: sessionStorage.getItem("token"),
+        method: "GET", headers: {
+            "Content-Type": "application/json", Authorization: sessionStorage.getItem("token"),
         },
     });
     rsp = await rsp.json();
@@ -265,21 +252,14 @@ const handleCategorySelection = async () => {
             catSelezionate.push(checkbox.name);
         }
     });
-    await render(
-        document.getElementById("noteContainer"),
-        document.getElementById("loader"),
-        await prendiAppunti(await categoryFeed(catSelezionate))
-    );
+    await render(document.getElementById("noteContainer"), document.getElementById("loader"), await prendiAppunti(await categoryFeed(catSelezionate)));
 };
 
 const categoryFeed = async (cat) => {
     let rsp = await fetch("/categoryFeed", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: sessionStorage.getItem("token"),
-        },
-        body: JSON.stringify({category: cat}),
+        method: "POST", headers: {
+            "Content-Type": "application/json", Authorization: sessionStorage.getItem("token"),
+        }, body: JSON.stringify({category: cat}),
     });
     rsp = await rsp.json();
     return rsp;
@@ -289,8 +269,7 @@ const prendiAppunti = async (value) => {
     const tutto = [];
     for (let index = 0; index < value.length; index++) {
         let obj = {
-            titolo: value[index].nome,
-            id: value[index].id,
+            titolo: value[index].nome, id: value[index].id,
         };
         let res = await pickComponent("/getNote/" + value[index].nome);
         obj["data"] = res.dateCreation;
@@ -306,3 +285,130 @@ const prendiAppunti = async (value) => {
     }
     return tutto;
 };
+
+let darkModeCheckbox = document.getElementById('darkMode');
+let darkModeState = sessionStorage.getItem('darkMode');
+let body = document.body;
+let html = document.documentElement;
+let offcanvasElements = document.querySelectorAll('.offcanvas');
+if (darkModeState === 'true') {
+    darkModeCheckbox.checked = true;
+    let tabs = document.querySelectorAll('.tab');
+    let navCards = document.querySelectorAll('.navigation-card');
+    let bgDarkLightElements = document.querySelectorAll('.bg-dark-light');
+
+    tabs.forEach(tab => {
+        tab.classList.remove('tab');
+        tab.classList.add('tab-dark');
+    });
+
+    navCards.forEach(navCard => {
+        navCard.classList.remove('navigation-card');
+        navCard.classList.add('navigation-card-dark');
+    });
+    offcanvasElements.forEach(offcanvasElement => {
+        offcanvasElement.classList.replace('offcanvas-light', 'offcanvas-dark');
+    });
+
+    bgDarkLightElements.forEach(element => {
+        element.classList.replace('bg-dark-light', 'bg-dark');
+    });
+    body.classList.remove('body');
+    body.classList.add('body-dark');
+    document.getElementById('cerca').classList.add('text-light');
+    document.getElementById('cerca').classList.remove('text-dark');
+    html.setAttribute('data-bs-theme', 'dark');
+} else if (darkModeState === 'false') {
+    let darkTabs = document.querySelectorAll('.tab-dark');
+    let darkNavCards = document.querySelectorAll('.navigation-card-dark');
+    let bgDarkElements = document.querySelectorAll('.bg-dark');
+    document.getElementById('cerca').classList.add('text-dark');
+    document.getElementById('cerca').classList.remove('text-light');
+    darkTabs.forEach(tab => {
+        tab.classList.remove('tab-dark');
+        tab.classList.add('tab');
+    });
+
+    darkNavCards.forEach(navCard => {
+        navCard.classList.remove('navigation-card-dark');
+        navCard.classList.add('navigation-card');
+    });
+
+    bgDarkElements.forEach(element => {
+        element.classList.replace('bg-dark', 'bg-dark-light');
+    });
+
+    body.classList.remove('body-dark');
+    body.classList.add('body');
+    offcanvasElements.forEach(offcanvasElement => {
+        offcanvasElement.classList.replace('offcanvas-dark', 'offcanvas-light');
+    });
+
+    html.setAttribute('data-bs-theme', 'light');
+}
+
+document.getElementById('darkMode').addEventListener('change', function () {
+
+    let body = document.body;
+    let html = document.documentElement;
+    let offcanvasElements = document.querySelectorAll('.offcanvas');
+
+    if (this.checked) {
+        sessionStorage.setItem('darkMode', 'true');
+
+        let tabs = document.querySelectorAll('.tab');
+        let navCards = document.querySelectorAll('.navigation-card');
+        let bgDarkLightElements = document.querySelectorAll('.bg-dark-light');
+
+        tabs.forEach(tab => {
+            tab.classList.remove('tab');
+            tab.classList.add('tab-dark');
+        });
+
+        navCards.forEach(navCard => {
+            navCard.classList.remove('navigation-card');
+            navCard.classList.add('navigation-card-dark');
+        });
+        offcanvasElements.forEach(offcanvasElement => {
+            offcanvasElement.classList.replace('offcanvas-light', 'offcanvas-dark');
+        });
+
+        bgDarkLightElements.forEach(element => {
+            element.classList.replace('bg-dark-light', 'bg-dark');
+        });
+        body.classList.remove('body');
+        body.classList.add('body-dark');
+        document.getElementById('cerca').classList.add('text-light');
+        document.getElementById('cerca').classList.remove('text-dark');
+        html.setAttribute('data-bs-theme', 'dark');
+    } else {
+        sessionStorage.setItem('darkMode', 'false');
+
+        let darkTabs = document.querySelectorAll('.tab-dark');
+        let darkNavCards = document.querySelectorAll('.navigation-card-dark');
+        let bgDarkElements = document.querySelectorAll('.bg-dark');
+        document.getElementById('cerca').classList.add('text-dark');
+        document.getElementById('cerca').classList.remove('text-light');
+        darkTabs.forEach(tab => {
+            tab.classList.remove('tab-dark');
+            tab.classList.add('tab');
+        });
+
+        darkNavCards.forEach(navCard => {
+            navCard.classList.remove('navigation-card-dark');
+            navCard.classList.add('navigation-card');
+        });
+
+        bgDarkElements.forEach(element => {
+            element.classList.replace('bg-dark', 'bg-dark-light');
+        });
+
+        body.classList.remove('body-dark');
+        body.classList.add('body');
+        offcanvasElements.forEach(offcanvasElement => {
+            offcanvasElement.classList.replace('offcanvas-dark', 'offcanvas-light');
+        });
+
+        html.setAttribute('data-bs-theme', 'light');
+    }
+});

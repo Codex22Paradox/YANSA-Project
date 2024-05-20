@@ -24,9 +24,7 @@ export const databaseFunction = {
         const sql = "SELECT * FROM appunto WHERE autore = ? AND visibilita = ?";
         const [results] = await db.promise().query(sql, [userId, 1]);
         for (let i = 0; i < results.length; i++) {
-            results[i].averageRating = await databaseFunction.getAverageRating(
-                results[i].id
-            );
+            results[i].averageRating = await databaseFunction.getAverageRating(results[i].id);
         }
         return results;
     },
@@ -35,27 +33,30 @@ export const databaseFunction = {
         const sql = "SELECT * FROM appunto WHERE autore = ?";
         const [results] = await db.promise().query(sql, [userId]);
         for (let i = 0; i < results.length; i++) {
-            results[i].averageRating = await databaseFunction.getAverageRating(
-                results[i].id
-            );
+            results[i].averageRating = await databaseFunction.getAverageRating(results[i].id);
         }
         return results;
     },
 
     getAverageRating: async (appuntoId) => {
-        const sql =
-            "SELECT AVG(valore) as averageRating FROM valutazione WHERE idAppunto = ?";
+        const sql = "SELECT AVG(valore) as averageRating FROM valutazione WHERE idAppunto = ?";
         const [results] = await db.promise().query(sql, [appuntoId]);
         return results[0].averageRating;
+    }, updateInstructions: async (username) => {
+        const sql = "UPDATE utente SET istruzioni = true WHERE username = ?";
+        const [results] = await db.promise().query(sql, [username]);
+        return results;
     },
-
+    getInstructions: async (username) => {
+        const sql = "SELECT istruzioni FROM utente WHERE username = ?";
+        const [results] = await db.promise().query(sql, [username]);
+        return results[0].istruzioni;
+    },
     insertRating: async (username, appuntoId, rating) => {
-        const checkSql =
-            "SELECT * FROM valutazione WHERE idUtente = (SELECT id FROM utente WHERE username = ?) AND idAppunto = ?";
+        const checkSql = "SELECT * FROM valutazione WHERE idUtente = (SELECT id FROM utente WHERE username = ?) AND idAppunto = ?";
         const [results] = await db.promise().query(checkSql, [username, appuntoId]);
         if (results.length === 0) {
-            const insertSql =
-                "INSERT INTO valutazione (idUtente, idAppunto, valore) VALUES ((SELECT id FROM utente WHERE username = ?), ?, ?)";
+            const insertSql = "INSERT INTO valutazione (idUtente, idAppunto, valore) VALUES ((SELECT id FROM utente WHERE username = ?), ?, ?)";
             const [insertResults] = await db
                 .promise()
                 .query(insertSql, [username, appuntoId, rating]);
@@ -63,16 +64,15 @@ export const databaseFunction = {
         } else {
             return null;
         }
-    },
-    searchNotesByCategories: async (categories) => {
+    }, searchNotesByCategories: async (categories) => {
         // Convert the categories array to a string where each category is surrounded by quotes
         const categoriesString = categories.map(category => `'${category}'`).join(',');
 
         const sql = `
             SELECT a.id, a.nome, a.visibilita, a.autore, a.dataCreazione, a.dataModifica
             FROM appunto AS a
-            JOIN categoriaAppunto AS ca ON a.id = ca.idAppunto
-            JOIN categoria AS c ON ca.idCategoria = c.id
+                     JOIN categoriaAppunto AS ca ON a.id = ca.idAppunto
+                     JOIN categoria AS c ON ca.idCategoria = c.id
             WHERE c.nome IN (${categoriesString})
               AND a.visibilita = 1
         `;
@@ -84,8 +84,7 @@ export const databaseFunction = {
             console.error(error);
             return null;
         }
-    },
-    searchNotesCategory: async (searchString, categories) => {
+    }, searchNotesCategory: async (searchString, categories) => {
         console.log(categories);
         searchString = searchString.replace(/ /g, "%20");
         let results = [];
@@ -112,17 +111,10 @@ export const databaseFunction = {
         try {
             const [queryResults] = await db
                 .promise()
-                .query(sql, [
-                    searchString,
-                    searchString,
-                    types,
-                    "*" + searchString + "*",
-                    categories
-                ]);
+                .query(sql, [searchString, searchString, types, "*" + searchString + "*", categories]);
             // Convert the count to an integer
             results = queryResults.map((result) => ({
-                ...result,
-                count: parseInt(result.count),
+                ...result, count: parseInt(result.count),
             }));
             console.log("Search results:", results); // Log the results
             return results;
@@ -130,8 +122,7 @@ export const databaseFunction = {
             console.error("Search error:", error); // Log the error
         }
         return results;
-    },
-    searchNotes: async (searchString) => {
+    }, searchNotes: async (searchString) => {
         searchString = searchString.replace(/ /g, "%20");
         let results = [];
         const sql = `
@@ -154,16 +145,10 @@ export const databaseFunction = {
         try {
             const [queryResults] = await db
                 .promise()
-                .query(sql, [
-                    searchString,
-                    searchString,
-                    types,
-                    "*" + searchString + "*"
-                ]);
+                .query(sql, [searchString, searchString, types, "*" + searchString + "*"]);
             // Convert the count to an integer
             results = queryResults.map((result) => ({
-                ...result,
-                count: parseInt(result.count),
+                ...result, count: parseInt(result.count),
             }));
             console.log("Search results:", results); // Log the results
             return results;
@@ -171,8 +156,7 @@ export const databaseFunction = {
             console.error("Search error:", error); // Log the error
         }
         return results;
-    },
-    login: async (username, password) => {
+    }, login: async (username, password) => {
         const sql = "SELECT * FROM utente WHERE username = ? AND password = ?";
         const [results] = await db.promise().query(sql, [username, password]);
         return results.length > 0;
@@ -393,8 +377,7 @@ export const databaseFunction = {
     },
 
     register: async (username, password, email) => {
-        const sql =
-            "INSERT INTO utente (username, password, mail) VALUES (?, ?, ?)";
+        const sql = "INSERT INTO utente (username, password, mail) VALUES (?, ?, ?)";
         try {
             const [results] = await db
                 .promise()
@@ -409,8 +392,7 @@ export const databaseFunction = {
     followUser: async (followerUsername, followedUsername) => {
         const getFollowerIdSql = "SELECT id FROM utente WHERE username = ?";
         const getFollowedIdSql = "SELECT id FROM utente WHERE username = ?";
-        const insertFollowSql =
-            "INSERT INTO utenteFollow (idUtenteSegue, idUtenteSeguito) VALUES (?, ?)";
+        const insertFollowSql = "INSERT INTO utenteFollow (idUtenteSegue, idUtenteSeguito) VALUES (?, ?)";
 
         try {
             const [followerResults] = await db
@@ -440,8 +422,7 @@ export const databaseFunction = {
     unfollowUser: async (followerUsername, followedUsername) => {
         const getFollowerIdSql = "SELECT id FROM utente WHERE username = ?";
         const getFollowedIdSql = "SELECT id FROM utente WHERE username = ?";
-        const deleteFollowSql =
-            "DELETE FROM utenteFollow WHERE idUtenteSegue = ? AND idUtenteSeguito = ?";
+        const deleteFollowSql = "DELETE FROM utenteFollow WHERE idUtenteSegue = ? AND idUtenteSeguito = ?";
 
         try {
             const [followerResults] = await db
@@ -471,8 +452,7 @@ export const databaseFunction = {
     followCategory: async (username, categoryName) => {
         const getUserIdSql = "SELECT id FROM utente WHERE username = ?";
         const getCategoryIdSql = "SELECT id FROM categoria WHERE nome = ?";
-        const insertFollowSql =
-            "INSERT INTO categoriaFollow (idUtente, idCategoria) VALUES (?, ?)";
+        const insertFollowSql = "INSERT INTO categoriaFollow (idUtente, idCategoria) VALUES (?, ?)";
 
         try {
             const [userResults] = await db.promise().query(getUserIdSql, [username]);
@@ -500,8 +480,7 @@ export const databaseFunction = {
     unfollowCategory: async (username, categoryName) => {
         const getUserIdSql = "SELECT id FROM utente WHERE username = ?";
         const getCategoryIdSql = "SELECT id FROM categoria WHERE nome = ?";
-        const deleteFollowSql =
-            "DELETE FROM categoriaFollow WHERE idUtente = ? AND idCategoria = ?";
+        const deleteFollowSql = "DELETE FROM categoriaFollow WHERE idUtente = ? AND idCategoria = ?";
 
         try {
             const [userResults] = await db.promise().query(getUserIdSql, [username]);
@@ -607,14 +586,11 @@ export const databaseFunction = {
         const userId = userIdResult[0].id;
 
         // Seconda query: otteniamo gli ID delle categorie seguite dall'utente
-        const getFollowedCategoriesIdSql =
-            "SELECT idCategoria FROM categoriaFollow WHERE idUtente = ?";
+        const getFollowedCategoriesIdSql = "SELECT idCategoria FROM categoriaFollow WHERE idUtente = ?";
         const [followedCategoriesIdResult] = await db
             .promise()
             .query(getFollowedCategoriesIdSql, [userId]);
-        const followedCategoriesIds = followedCategoriesIdResult.map(
-            (row) => row.idCategoria
-        );
+        const followedCategoriesIds = followedCategoriesIdResult.map((row) => row.idCategoria);
 
         // Se non ci sono categorie seguite, restituiamo un array vuoto
         if (followedCategoriesIds.length === 0) {
@@ -633,8 +609,7 @@ export const databaseFunction = {
 
     removeCategoriesFromNote: async (noteTitle, author, categories) => {
         // Get the note's ID
-        const getNoteIdSql =
-            "SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)";
+        const getNoteIdSql = "SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)";
         const [noteIdResults] = await db
             .promise()
             .query(getNoteIdSql, [noteTitle, author]);
@@ -648,8 +623,7 @@ export const databaseFunction = {
         const categoryIds = categoryIdsResults.map((row) => row.id);
 
         // Delete the rows in the `categoriaAppunto` table
-        const deleteSql =
-            "DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)";
+        const deleteSql = "DELETE FROM categoriaAppunto WHERE idAppunto = ? AND idCategoria IN (?)";
         const [deleteResults] = await db
             .promise()
             .query(deleteSql, [noteId, categoryIds]);
@@ -658,47 +632,36 @@ export const databaseFunction = {
 
     addCategoriesToNote: async (noteTitle, author, categories) => {
         // Normalize categories and remove duplicates
-        categories = [
-            ...new Set(
-                categories.map((category) =>
-                    category
-                        .trim()
-                        .replace(/\s\s+/g, " ")
-                        .toLowerCase()
-                        .replace(/^\w/, (c) => c.toUpperCase())
-                )
-            ),
-        ];
+        categories = [...new Set(categories.map((category) => category
+            .trim()
+            .replace(/\s\s+/g, " ")
+            .toLowerCase()
+            .replace(/^\w/, (c) => c.toUpperCase()))),];
 
         // Get the note's ID
-        const getNoteIdSql =
-            "SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)";
+        const getNoteIdSql = "SELECT id FROM appunto WHERE nome = ? AND autore = (SELECT id FROM utente WHERE username = ?)";
         const [noteIdResults] = await db
             .promise()
             .query(getNoteIdSql, [noteTitle, author]);
         const noteId = noteIdResults[0].id;
 
         // Process each category
-        await Promise.all(
-            categories.map(async (category) => {
-                // Ensure the category exists
-                const createCategorySql =
-                    "INSERT IGNORE INTO categoria (nome) VALUES (?)";
-                await db.promise().query(createCategorySql, [category]);
+        await Promise.all(categories.map(async (category) => {
+            // Ensure the category exists
+            const createCategorySql = "INSERT IGNORE INTO categoria (nome) VALUES (?)";
+            await db.promise().query(createCategorySql, [category]);
 
-                // Get the category ID
-                const getCategoryIdSql = "SELECT id FROM categoria WHERE nome = ?";
-                const [categoryIdResults] = await db
-                    .promise()
-                    .query(getCategoryIdSql, [category]);
-                const categoryId = categoryIdResults[0].id;
+            // Get the category ID
+            const getCategoryIdSql = "SELECT id FROM categoria WHERE nome = ?";
+            const [categoryIdResults] = await db
+                .promise()
+                .query(getCategoryIdSql, [category]);
+            const categoryId = categoryIdResults[0].id;
 
-                // Associate the category with the note
-                const associateSql =
-                    "INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)";
-                await db.promise().query(associateSql, [noteId, categoryId]);
-            })
-        );
+            // Associate the category with the note
+            const associateSql = "INSERT IGNORE INTO categoriaAppunto (idAppunto, idCategoria) VALUES (?, ?)";
+            await db.promise().query(associateSql, [noteId, categoryId]);
+        }));
     },
 
     changeNoteTitle: async (oldTitle, newTitle) => {

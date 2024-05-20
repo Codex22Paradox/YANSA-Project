@@ -607,3 +607,29 @@ app.get('/followedCategories/', async (req, res) => {
         res.status(500).send('Server error');
     }
 });
+
+app.post('/updateInstructions', async (req, res) => {
+    const username = req.userId;
+    try {
+        const result = await databaseFunction.updateInstructions(username);
+        if (result.affectedRows > 0) {
+            res.status(200).json({message: 'Instructions updated successfully', result: true});
+        } else {
+            res.status(404).send('User not found');
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});
+
+app.get('/getInstructions', async (req, res) => {
+    const username = req.userId;
+    try {
+        const instructions = await databaseFunction.getInstructions(username);
+        res.status(200).json({result: instructions});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
+});

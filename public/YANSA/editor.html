@@ -57,7 +57,7 @@
     <link rel="stylesheet" href="./style.css"/>
 </head>
 
-<body>
+<body class="body">
 <div
         class="navigation-card position-fixed top-50 start-0 translate-middle-y d-flex flex-column align-items-center justify-content-center"
 >
@@ -113,6 +113,9 @@
                         </div>
                     </label>
                     <span class="text-white">Pubblica</span>
+                </div>
+                <div class="col-auto align-middle mt-3">
+                    <input type="checkbox" class="theme-checkbox" id="darkMode" title="darkmode">
                 </div>
             </div>
             <div class="row justify-content-start d-none" id="ratingInput">
@@ -184,7 +187,7 @@
         <div class="row justify-content-between">
             <div class="col">
             </div>
-            <div class="col-5 rounded-4" id="editorjs-container">
+            <div class="col-5 rounded-4 editorjs-container" id="editorjs-container">
                 <div id="editorjs"></div>
             </div>
             <div class="col mt-3 text-end">
