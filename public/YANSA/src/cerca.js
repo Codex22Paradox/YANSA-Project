@@ -39,7 +39,7 @@ cerca.addEventListener("input", async (event) => {
       loader.classList.add("d-none");
       div.classList.remove("d-none");
       await render(div, document.getElementById("loader"), finalArray);
-      if (array.length === 0) {
+      if (array.length == 0) {
         div.innerHTML =
           '<h1 class="text-center text-white">Nessun appunto trovato</h1>';
       }
@@ -236,6 +236,11 @@ const renderCheckbox = async (div) => {
     output += html;
   });
   div.innerHTML = output;
+
+  const checkboxes = document.querySelectorAll(".radio-input");
+  checkboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", handleCategorySelection);
+  });
 };
 
 const pickData = async (url) => {
@@ -250,7 +255,7 @@ const pickData = async (url) => {
   return rsp;
 };
 
-document.getElementById("pigliaCatFeed").onclick = async () => {
+const handleCategorySelection = async () => {
   const checkboxes = document.querySelectorAll(".radio-input");
   const catSelezionate = [];
   checkboxes.forEach(function (checkbox) {
