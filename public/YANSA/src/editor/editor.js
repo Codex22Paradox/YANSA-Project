@@ -482,7 +482,7 @@ if (sessionStorage.getItem("token") === null || (sessionStorage.getItem("noteNam
 if (sessionStorage.getItem("editorType") == "modify") {
     interval = setInterval(() => {
         saveButton.click();
-    }, 1000 * 60 * 5);
+    }, 1000 * 60);
 }
 
 window.onbeforeunload = () => {
