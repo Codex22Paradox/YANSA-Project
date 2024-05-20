@@ -22,6 +22,7 @@ for (let i = 1; i < 6; i++) {
 }
 let categories;
 let categoriesList;
+let interval;
 const renderCategories = categories => {
   let html = "";
   categories.forEach(element => {
@@ -412,7 +413,6 @@ saveButton.onclick = () => {
           let changed;
           let posChange;
           for (let j = 0; j < data.blocks.length; j++) {
-            // TODO: funzione che compara i dizionari
             if (
               element.id == data.blocks[j].id &&
               (element.type !== data.blocks[j].type ||
@@ -424,10 +424,14 @@ saveButton.onclick = () => {
               posChange = j;
             }
           }
+          console.log("changed")
+          console.log(changed)
           if (checkChanged) {
-            modified.push({ pos: i, data: changed });
+            modified.push({ pos: i, data: changed.data });
           }
         });
+        console.log("modified")
+        console.log(modified)
         if (title !== document.getElementById("titolo_eff").innerText) {
           fetch("/saveNote/modify", {
             method: "POST",
@@ -600,6 +604,16 @@ if (
     sessionStorage.getItem("editorType") !== "new")
 ) {
   window.location.href = "./home.html";
+}
+
+if(sessionStorage.getItem("editorType") == "modify"){
+  interval = setInterval(() => {
+    saveButton.click();
+  }, 1000 * 60 * 5);
+}
+
+window.onbeforeunload = () => {
+  clearInterval(interval)
 }
 
 document.getElementById("setting").onclick = () => {
