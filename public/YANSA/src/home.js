@@ -110,14 +110,9 @@ let template = `
   </div>`;
 
 let template2 = `
-<div class="wrapper">
-<label>
-  <input class="radio-input" type="checkbox" name="%CAT" />
-  <span class="radio-tile">
-    <span class="radio-label">%CAT</span>
-  </span>
-</label>
-</div>`;
+<div class="col-auto">
+<input type="checkbox" class="btn-check mt-3" id="%CAT" autocomplete="off" name="%CAT">
+<label class="btn btn-outline-success border-success text-white mt-3" for="%CAT" >%CAT</label></div>`;
 
 const render = async (div, div2, listino) => {
     if (listino.length !== 0) {

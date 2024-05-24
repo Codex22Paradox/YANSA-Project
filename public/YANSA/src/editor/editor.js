@@ -9,14 +9,9 @@ const btnRating = document.getElementById("ratingInvia");
 const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
 const modalIstruzioni = new bootstrap.Modal(document.getElementById("modalIstruzioni"));
-const templateCat = `<div class="wrapper">
-<label>
-    <input class="radio-input" type="checkbox" name="engine" id="%ID"/>
-    <span class="radio-tile">
-<span class="radio-labelEditor">%CAT</span>
-</span>
-</label>
-</div>`;
+const templateCat = `<div class="col-auto">
+<input type="checkbox" class="btn-check mt-3" id="%CAT" autocomplete="off" name="%CAT">
+<label class="btn btn-outline-success border-success text-white mt-3" for="%CAT" >%CAT</label></div>`;
 for (let i = 1; i < 6; i++) {
     ratings.push(document.getElementById("star" + i));
 }
