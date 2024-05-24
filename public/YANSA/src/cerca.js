@@ -210,8 +210,8 @@ document.getElementById("setting").onclick = () => {
 
 let template2 = `
 <div class="col-auto">
-<input type="checkbox" class="btn-check mt-3" id="%CAT" autocomplete="off" name="%CAT">
-<label class="btn btn-outline-success border-success text-white mt-3" for="%CAT" >%CAT</label></div>`;
+<input type="checkbox" class="btn-check mt-3 rounded-5" id="%CAT" autocomplete="off" name="%CAT">
+<label class="btn btn-outline-success border-success text-white mt-3 rounded-5" for="%CAT" >%CAT</label></div>`;
 
 const renderCheckbox = async (div) => {
     const listaCat = await pickData("/categories");

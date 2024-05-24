@@ -10,8 +10,8 @@ const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
 const modalIstruzioni = new bootstrap.Modal(document.getElementById("modalIstruzioni"));
 const templateCat = `<div class="col-auto">
-<input type="checkbox" class="btn-check mt-3" id="%CAT" autocomplete="off" name="%CAT">
-<label class="btn btn-outline-success border-success text-white mt-3" for="%CAT" >%CAT</label></div>`;
+<input type="checkbox" class="btn-check mt-3 rounded-5" id="%ID" autocomplete="off" name="engine">
+<label class="btn btn-outline-success border-success text-white mt-3 rounded-5" for="%ID" >%CAT</label></div>`;
 for (let i = 1; i < 6; i++) {
     ratings.push(document.getElementById("star" + i));
 }
@@ -21,7 +21,7 @@ let interval;
 const renderCategories = categories => {
     let html = "";
     categories.forEach(element => {
-        let row = templateCat.replace("%ID", element);
+        let row = templateCat.replace("%ID", element).replace("%ID", element);
         row = row.replace("%CAT", element);
         html += row;
     });
@@ -31,7 +31,7 @@ const renderCategories = categories => {
     document.getElementById("categories").innerHTML = html;
 };
 const renderSingleCategory = category => {
-    let html = templateCat.replace("%ID", category);
+    let html = templateCat.replace("%ID", category).replace("%ID", category);
     html = html.replace("%CAT", category);
     document.getElementById("categories").innerHTML += html;
 };
@@ -122,7 +122,7 @@ editor.isReady
                 .then(res => {
                     let html = "";
                     res.result.forEach(element => {
-                        let row = templateCat.replace("%ID", element);
+                        let row = templateCat.replace("%ID", element).replace("%ID", element);
                         row = row.replace("%CAT", element);
                         html += row;
                     });

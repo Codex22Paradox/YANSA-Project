@@ -1047,17 +1047,12 @@ a.article:hover {
 .editorjs-container {
     min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
     background-color: #ffffff;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .editorjs-container-dark {
     min-height: 100vh; /* Imposta l'altezza minima al 100% dell'altezza della viewport */
     background-color: #020202; /* Imposta il colore di sfondo su bianco */
-    margin-left: auto;
-    margin-right: auto;
 }
-
 
 .ce-header {
     color: #000000;
