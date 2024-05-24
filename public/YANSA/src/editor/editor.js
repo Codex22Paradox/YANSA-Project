@@ -544,8 +544,8 @@ if (darkModeState === 'true') {
     html.setAttribute('data-bs-theme', 'dark');
 } else if (darkModeState === 'false') {
     darkModeCheckbox.checked = false;
-    document.getElementById("editorjs-container").classList.remove("editorjs-container");
-    document.getElementById("editorjs-container").classList.add("editorjs-container-dark");
+    document.getElementById("editorjs-container").classList.add("editorjs-container");
+    document.getElementById("editorjs-container").classList.remove("editorjs-container-dark");
     let darkTabs = document.querySelectorAll('.tab-dark');
     let darkNavCards = document.querySelectorAll('.navigation-card-dark');
     let bgDarkElements = document.querySelectorAll('.bg-dark');
