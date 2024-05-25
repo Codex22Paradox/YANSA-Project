@@ -39,7 +39,6 @@ document.getElementById("pigliaCatFeed").onclick = async () => {
       catSelezionate.push(checkbox.name);
     }
   });
-  console.log(catSelezionate);
   await render(
     document.getElementById("noteContainer"),
     document.getElementById("pencil"),
@@ -206,7 +205,6 @@ popoverTriggerList.forEach(function (popoverTriggerEl) {
     const logout = document.getElementById("logout");
 
     logout.onclick = () => {
-      console.log("logout");
       sessionStorage.clear();
       window.location.href = "./accedi.html";
     };
@@ -223,7 +221,6 @@ popoverTriggerList.forEach(function (popoverTriggerEl) {
 });
 
 const renderCheckbox = async (div) => {
-  console.log(JSON.parse(sessionStorage.getItem("checkboxValori")));
   const listaCat = await pickData("/followedCategories/");
   let output = "";
   const checkboxValori =
