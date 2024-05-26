@@ -120,13 +120,8 @@ editor.isReady
             })
                 .then(res => res.json())
                 .then(res => {
-                    let html = "";
-                    res.result.forEach(element => {
-                        let row = templateCat.replace("%ID", element).replace("%ID", element);
-                        row = row.replace("%CAT", element);
-                        html += row;
-                    });
-                    document.getElementById("categories").innerHTML = html;
+                    categories = res.result;
+                    renderCategories(categories)
                 });
         } else if (sessionStorage.getItem("editorType") === "modify") {
             if (!statusInstruction) {
