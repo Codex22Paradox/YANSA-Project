@@ -178,6 +178,7 @@ editor.isReady
         } else if (sessionStorage.getItem("editorType") === "view") {
             document.getElementById("ratingInput").classList.remove("d-none");
             document.getElementById("titleInput").classList.add("d-none");
+            btnRating.setAttribute("disabled", "");
             editor.readOnly.toggle();
             fetch("/getNote/" + sessionStorage.getItem("noteName"), {
                 method: "GET", headers: {
@@ -415,6 +416,10 @@ document.getElementById("homeButton").onclick = () => {
 document.getElementById("searchButton").onclick = () => {
     window.location.href = "./ricerca.html";
 };
+
+document.getElementById("ratingInput").onclick = () =>{
+  btnRating.removeAttribute("disabled");
+}
 
 titleInput.onblur = () => {
     document.getElementById("titolo_eff").innerText = titleInput.value;
