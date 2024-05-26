@@ -10,7 +10,7 @@ const publicSwitch = document.getElementById("notePublic");
 const ratings = [];
 const modalIstruzioni = new bootstrap.Modal(document.getElementById("modalIstruzioni"));
 const templateCat = `<div class="col-auto">
-<input type="checkbox" class="btn-check mt-3 rounded-5" id="%ID" autocomplete="off" name="engine">
+<input type="checkbox" class="btn-check mt-3 rounded-5 radio-input" id="%ID" autocomplete="off" name="engine">
 <label class="btn btn-outline-success border-success text-white mt-3 rounded-5" for="%ID" >%CAT</label></div>`;
 for (let i = 1; i < 6; i++) {
     ratings.push(document.getElementById("star" + i));
