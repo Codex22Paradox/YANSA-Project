@@ -19,7 +19,7 @@ const __dirname = dirname(__filename);
 // Utilizza il middleware express.json() per analizzare le richieste JSON
 app.use(express.json({limit: "50mb"}));
 // Fornisce la cartella "public"
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public/YANSA/accedi.html')));
 // Configura express-session
 app.use(session({
     secret: tokenConfig.secret, resave: false, saveUninitialized: true, cookie: {maxAge: 2 * 60 * 60} // 2 ore
